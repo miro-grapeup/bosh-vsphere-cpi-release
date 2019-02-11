@@ -185,6 +185,10 @@ module VSphereCloud
       vcenter['upgrade_hw_version']
     end
 
+    def enable_first_class_disk
+      vcenter['enable_first_class_disk']
+    end
+
     def nsxt
       return nil unless nsxt_enabled?
       NSXTConfig.new(
@@ -240,6 +244,7 @@ module VSphereCloud
             optional('http_logging') => bool,
             optional('enable_auto_anti_affinity_drs_rules') => bool,
             optional('upgrade_hw_version') => bool,
+            optional('enable_first_class_disk') => bool,
             optional('vm_storage_policy_name') => String,
             optional('nsxt') => {
               optional('host') => String,

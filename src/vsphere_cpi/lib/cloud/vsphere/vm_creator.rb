@@ -6,8 +6,8 @@ module VSphereCloud
   class VmCreator
     include Logger
 
-    def initialize(client:, cloud_searcher:, cpi:, datacenter:, agent_env:, ip_conflict_detector:, tagging_tagger:, default_disk_type:,
-                   enable_auto_anti_affinity_drs_rules:, stemcell:, upgrade_hw_version:, pbm:)
+    def initialize(client:, cloud_searcher:, cpi:, datacenter:, agent_env:, ip_conflict_detector:, default_disk_type:,
+                   enable_auto_anti_affinity_drs_rules:, stemcell:, upgrade_hw_version:, enable_first_class_disk:, pbm:)
       @client = client
       @cloud_searcher = cloud_searcher
       @cpi = cpi
@@ -19,6 +19,7 @@ module VSphereCloud
       @enable_auto_anti_affinity_drs_rules = enable_auto_anti_affinity_drs_rules
       @stemcell = stemcell
       @upgrade_hw_version = upgrade_hw_version
+      @enable_first_class_disk = enable_first_class_disk
       @pbm = pbm
     end
 
