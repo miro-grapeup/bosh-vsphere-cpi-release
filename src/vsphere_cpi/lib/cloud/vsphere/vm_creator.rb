@@ -7,7 +7,7 @@ module VSphereCloud
     include Logger
 
     def initialize(client:, cloud_searcher:, cpi:, datacenter:, agent_env:, tagging_tagger:, default_disk_type:,
-                   enable_auto_anti_affinity_drs_rules:, stemcell:, upgrade_hw_version:, pbm:)
+                   enable_auto_anti_affinity_drs_rules:, stemcell:, upgrade_hw_version:, pbm:, nsxt_policy_provider:, nsxt_config:)
       @client = client
       @cloud_searcher = cloud_searcher
       @cpi = cpi
@@ -19,6 +19,8 @@ module VSphereCloud
       @stemcell = stemcell
       @upgrade_hw_version = upgrade_hw_version
       @pbm = pbm
+      @nsxt_policy_provider = nsxt_policy_provider
+      @nsxt_config = nsxt_config
     end
 
     def create(vm_config)
@@ -99,6 +101,11 @@ module VSphereCloud
               replicated_stemcell_vm.pci_controller.key,
               dvs_index
             )
+            if @nsxt_config.use_policy_api? && network.is_a?(VimSdk::Vim::OpaqueNetwork)
+              tags = OpenStruct.new(vm_name: vm_config.name,  network_index: index, segment: network_name)
+              vif_attach_id = @nsxt_policy_provider.create_segment_port segment: network_name, tags: tags
+              virtual_nic.external_id = vif_attach_id
+            end
             nic_config = Resources::VM.create_add_device_spec(virtual_nic)
             config_spec.device_change << nic_config
           end
@@ -251,7 +258,6 @@ module VSphereCloud
 
         break
       end
-
       created_vm
     end
 
