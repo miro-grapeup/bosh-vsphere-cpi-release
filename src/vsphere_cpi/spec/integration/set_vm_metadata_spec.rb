@@ -5,14 +5,28 @@ require 'yaml'
 
 describe 'set_vm_metadata' do
   context 'when called with duplicate keys with multiple threads' do
-    subject(:cpi) { VSphereCloud::Cloud.new(cpi_options) }
-    let(:metadata) { { "bosh-#{SecureRandom.uuid}-key" => "test value" } }
+    before do
+      @nsxt_host = fetch_property('BOSH_VSPHERE_CPI_NSXT_HOST')
+      @nsxt_username = fetch_property('BOSH_VSPHERE_CPI_NSXT_USERNAME')
+      @nsxt_password = fetch_property('BOSH_VSPHERE_CPI_NSXT_PASSWORD')
+    end
+
+    let(:cpi) do
+      VSphereCloud::Cloud.new(cpi_options(nsxt: {
+          host: @nsxt_host,
+          username: @nsxt_username,
+          password: @nsxt_password
+        })
+      )
+    end
+
+    let(:metadata) { { "bosh-#{SecureRandom.uuid}-key" => "test value", "id" => "Hello" } }
     let(:network_spec) do
       {
         'static' => {
           'ip' => "169.254.1.#{rand(4..254)}",
           'netmask' => '255.255.254.0',
-          'cloud_properties' => { 'name' => @vlan },
+          'cloud_properties' => { 'name' => 'vcpi-seg-1' },
           'default' => ['dns', 'gateway'],
           'dns' => ['169.254.1.2'],
           'gateway' => '169.254.1.3'
@@ -45,7 +59,11 @@ describe 'set_vm_metadata' do
       cpis = []
       pool_size = 5
       pool_size.times do
-        cpis << VSphereCloud::Cloud.new(cpi_options)
+        cpis << VSphereCloud::Cloud.new(cpi_options(nsxt: {
+            host: @nsxt_host,
+            username: @nsxt_username,
+            password: @nsxt_password
+        }))
       end
 
       pool_size.times do |i|

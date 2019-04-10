@@ -7,7 +7,7 @@ context 'exercising core CPI functionality' do
       'static' => {
         'ip' => "169.254.#{rand(1..254)}.#{rand(4..254)}",
         'netmask' => '255.255.254.0',
-        'cloud_properties' => {'name' => vlan},
+        'cloud_properties' => {'name' => 'test_segment'},
         'default' => ['dns', 'gateway'],
         'dns' => ['169.254.1.2'],
         'gateway' => '169.254.1.3'

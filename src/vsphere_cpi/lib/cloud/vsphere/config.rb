@@ -1,5 +1,5 @@
 module VSphereCloud
-  class NSXTConfig < Struct.new(:host, :username, :password, :certificate, :private_key, :default_vif_type)
+  class NSXTConfig < Struct.new(:host, :username, :password, :certificate, :private_key, :default_vif_type, :policy_enabled)
     def self.validate_schema(config)
       return true if config.nil?
 
@@ -122,6 +122,10 @@ module VSphereCloud
       vcenter['password']
     end
 
+    def use_nsxt_policy_client?
+      true
+    end
+
     def vcenter_default_disk_type
       vcenter['default_disk_type']
     end
@@ -187,7 +191,8 @@ module VSphereCloud
         vcenter['nsxt']['password'],
         vcenter['nsxt']['certificate'],
         vcenter['nsxt']['private_key'],
-        vcenter['nsxt']['default_vif_type']
+        vcenter['nsxt']['default_vif_type'],
+        true,
       )
     end
 

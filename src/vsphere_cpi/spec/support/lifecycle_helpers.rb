@@ -289,7 +289,6 @@ module LifecycleHelpers
       'disk' => 2048,
       'cpu' => 1,
     }
-
     vm_id = cpi.create_vm(
       'agent-007',
       @stemcell_id,
