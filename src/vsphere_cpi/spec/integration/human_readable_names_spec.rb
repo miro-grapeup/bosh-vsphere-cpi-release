@@ -100,7 +100,7 @@ describe 'enable human readable names' do
 
     context 'when instance group name and deployment name contain non_ASCII characters' do
       let(:environment){ {'bosh' => { 'groups' => ['fake-director-name', 'ÅÅÅÅ', 'αβ'] } } }
-      it 'create vm with human readable name' do
+      it 'create vm with UUID n' do
         begin
           test_vm_id = human_readable_name_cpi.create_vm(
             'agent-007',

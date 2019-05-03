@@ -26,7 +26,7 @@ module VSphereCloud
         @vm_cid = "vm-#{SecureRandom.uuid}"
         return @vm_cid
       end
-      @vm_cid = generate_human_readable_name(human_readable_name_info[0], human_readable_name_info[1])
+      @vm_cid = generate_human_readable_name(human_readable_name_info[0], human_readable_name_info[1], vm_index)
       if @vm_cid != "#{URI.escape(@vm_cid)}"
         logger.info("Metadata contains non ASCII characters, using UUID based naming.")
         @vm_cid = "vm-#{SecureRandom.uuid}"
@@ -83,25 +83,47 @@ module VSphereCloud
       @manifest_params.fetch(:human_readable_name_info, nil)
     end
 
+    def vm_index
+      @manifest_params.fetch(:vm_index, nil)
+    end
+
     def networks_spec
       @manifest_params[:networks_spec] || {}
     end
 
-    def generate_human_readable_name(instance_name, deployment_name)
-      max_prefix = 79 - 12 - 2  # size limit 80 from vCenter, 12 digits for unique suffix, 2 for underscores
-      uuid_suffix = SecureRandom.uuid.slice(-12, 12)
-
-      if instance_name.size + deployment_name.size > max_prefix
-        trim_codepoint_size = instance_name.size + deployment_name.size - max_prefix
-        if deployment_name.size <= 25 # ideal size for deployment name set to 25
+    def generate_name_prefix(instance_name, deployment_name, prefix_length, deployment_length)
+      if instance_name.size + deployment_name.size > prefix_length
+        trim_codepoint_size = instance_name.size + deployment_name.size - prefix_length
+        if deployment_name.size <= deployment_length
           instance_name = instance_name.slice(0, instance_name.size - trim_codepoint_size)
         else
-          instance_codepoint_size = [max_prefix -  25, instance_name.size].min
+          instance_codepoint_size = [prefix_length -  21, instance_name.size].min
           instance_name = instance_name.slice(0, instance_codepoint_size)
-          deployment_name = deployment_name.slice(0, max_prefix - instance_codepoint_size)
+          deployment_name = deployment_name.slice(0, prefix_length - instance_codepoint_size)
         end
       end
-      "#{instance_name}_#{deployment_name}_#{uuid_suffix}"
+      "#{instance_name}_#{deployment_name}"
+    end
+
+    def generate_human_readable_name(instance_name, deployment_name, vm_index)
+      dp_length = 25 # ideally reserve 25 digits for deployment name
+      uuid_suffix = SecureRandom.uuid.slice(-12, 12)
+
+      if vm_index.nil?
+        max_prefix = 79 - 12 - 2 # limit 80 from vCenter, 12 digits unique suffix, 2  underscores
+        name_prefix = generate_name_prefix(instance_name, deployment_name, max_prefix, dp_length)
+        return "#{name_prefix}_#{uuid_suffix}"
+      end
+
+      # 4 digits can support for 10,000 vms. In case exceeded , trim it.
+      if vm_index.size > 4
+        vm_index = vm_index.slice(-4, 4)
+      end
+
+      max_prefix = 79 - 12 - vm_index.size - 3 # 3 digits for underscores
+      dp_length = dp_length - vm_index.size
+      name_prefix = generate_name_prefix(instance_name, deployment_name, max_prefix, dp_length)
+      "#{name_prefix}_#{vm_index}_#{uuid_suffix}"
     end
 
     def vsphere_networks

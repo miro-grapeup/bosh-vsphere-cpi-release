@@ -278,7 +278,7 @@ module VSphereCloud
       end
     end
 
-    def create_vm(agent_id, stemcell_cid, vm_type, networks_spec, existing_disk_cids = [], environment = nil)
+    def create_vm(agent_id, stemcell_cid, vm_type, networks_spec, existing_disk_cids = [], environment = nil, metadata = nil )
       with_thread_name("create_vm(#{agent_id}, ...)") do
         verify_props('VM', [ 'cpu', 'ram', 'disk' ], vm_type)
 
@@ -312,6 +312,10 @@ module VSphereCloud
 
           if config.human_readable_name_enabled?
             manifest_params.update(human_readable_name_info: update_name_info_from_bosh_env(environment))
+          end
+
+          unless metadata.nil? ||
+            manifest_params.update(vm_index: metadata['index'])
           end
 
           vm_config = VmConfig.new(
