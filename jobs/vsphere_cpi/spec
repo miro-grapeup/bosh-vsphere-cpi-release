@@ -34,6 +34,9 @@ properties:
   vcenter.upgrade_hw_version:
     description: Upgrades virtual machines to latest virtual hardware version supported on the ESXi host.
     default: false
+  vcenter.enable_first_class_disk:
+    description: Enables first class disk for BOSH VMs.
+    default: true
   vcenter.vm_storage_policy_name:
     description: Name of the storage Policy which is applied to a VM and its ephemeral disk.
   vcenter.enable_human_readable_name:

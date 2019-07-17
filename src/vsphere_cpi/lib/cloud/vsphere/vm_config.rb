@@ -76,6 +76,10 @@ module VSphereCloud
       @manifest_params[:storage_policy]
     end
 
+    def enable_first_class_disk
+      @manifest_params[:enable_first_class_disk]
+    end
+
     def human_readable_name_enabled?
       @manifest_params[:enable_human_readable_name]
     end

@@ -332,6 +332,7 @@ module VSphereCloud
             enable_auto_anti_affinity_drs_rules: @config.vcenter_enable_auto_anti_affinity_drs_rules,
             stemcell: Stemcell.new(stemcell_cid),
             upgrade_hw_version: @config.upgrade_hw_version,
+            enable_first_class_disk: @config.enable_first_class_disk,
             pbm: @pbm,
           )
           created_vm = vm_creator.create(vm_config)
@@ -558,10 +559,10 @@ module VSphereCloud
           disk_to_attach = @datacenter.move_disk_to_datastore(disk_to_attach, destination_datastore)
         end
 
-        disk_spec = vm.attach_disk(disk_to_attach)
+        unit_number = vm.attach_disk(disk_to_attach, raw_director_disk_cid)
         # Overwrite cid with the director cid
         # Since director sends messages with "director cid" to agent, the agent needs that ID in its env, not the clean_cid
-        add_disk_to_agent_env(vm, director_disk_cid, disk_spec.device.unit_number)
+        add_disk_to_agent_env(vm, director_disk_cid, unit_number) # disk_spec.device.unit_number)
       end
     end
 
@@ -572,7 +573,13 @@ module VSphereCloud
         logger.info("Detaching disk: #{director_disk_cid.value} from vm: #{vm_cid}")
 
         vm = vm_provider.find(vm_cid)
+        # to find the disk if disk is traditional disk
         disk = vm.disk_by_cid(director_disk_cid.value)
+        require 'pry-byebug'
+        binding.pry
+
+        disk = @datacenter.find_disk(director_disk_cid) if  disk.nil? && @config.enable_first_class_disk
+
         raise Bosh::Clouds::DiskNotAttached.new(true), "Disk '#{director_disk_cid.value}' is not attached to VM '#{vm_cid}'" if disk.nil?
 
         vm.detach_disks([disk])
@@ -620,7 +627,8 @@ module VSphereCloud
           next if disk.nil?
 
           logger.info("Created disk: #{disk.inspect}")
-          raw_director_disk_cid = disk_pool.storage_list.any? ? DirectorDiskCID.encode(disk.cid, target_datastore_pattern: target_datastore_pattern) : disk.cid
+          #raw_director_disk_cid = disk_pool.storage_list.any? ? DirectorDiskCID.encode(disk.cid, target_datastore_pattern: target_datastore_pattern) : disk.cid
+          raw_director_disk_cid = DirectorDiskCID.encode(disk.cid, target_datastore_pattern: target_datastore_pattern)
           # Return disk cid for the created disk.
           return raw_director_disk_cid
         end
@@ -632,9 +640,17 @@ module VSphereCloud
       with_thread_name("delete_disk(#{raw_director_disk_cid})") do
         director_disk_cid = DirectorDiskCID.new(raw_director_disk_cid)
         logger.info("Deleting disk: #{director_disk_cid.value}")
-        disk = @datacenter.find_disk(director_disk_cid)
-        client.delete_disk(@datacenter.mob, disk.path)
 
+        disk = @datacenter.find_disk(director_disk_cid) # hope can bring some value to indicate disk type fcd or not
+        require 'pry-byebug'
+        binding.pry
+
+        if @config.enable_first_class_disk
+          client.delete_fcd_disk(disk.cid, disk.datastore.mob) # Vim::Datastore
+          #client.delete_fcd_disk(disk.cid, disk.datastore)
+        else
+          client.delete_disk(@datacenter.mob, disk.path)
+        end
         logger.info('Finished deleting disk')
       end
     end
@@ -723,7 +739,7 @@ module VSphereCloud
       end
       mobs = subfolders.map { |folder| folder.child_entity }.flatten
       mobs.map do |mob|
-        VSphereCloud::Resources::VM.new(mob.name, mob, @client)
+        VSphereCloud::Resources::VM.new(mob.name, mob, @client, @config)
       end
     end
 

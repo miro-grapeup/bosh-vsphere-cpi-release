@@ -125,6 +125,20 @@ module VSphereCloud
       end
     end
 
+    def delete_fcd_disk(disk_cid, datastore)
+      id = VimSdk::Vim::Vslm::ID.new
+      id.id = disk_cid
+      begin
+        wait_for_task do
+          service_content.v_storage_object_manager.delete_v_storage_object(id, datastore) # datastore should be Vim::Datastore
+        end
+      rescue => e
+        unless e.instance_of(VimSdk::Vim::Fault::NotFound)
+          raise e
+        end
+      end
+    end
+
     def delete_disk(datacenter_mob, path)
       begin
         wait_for_task do
@@ -140,7 +154,30 @@ module VSphereCloud
       end
     end
 
+    def move_fcd_disk(source_datacenter_mob, source_path, dest_datacenter_mob, dest_path, disk_cid)
+      require 'pry-byebug'
+      binding.pry
+
+      create_parent_folder(dest_datacenter_mob, dest_path)
+      logger.info("Moving disk: #{source_path} to #{dest_path}")
+      vslm_id = VimSdk::Vim::Vslm::ID.new
+      vslm_id.id = disk_cid
+      spec = VimSdk::Vim::Vslm::RelocateSpec.new
+      spec.backing_spec = VimSdk::Vim::Vslm::CreateSpec::DiskFileBackingSpec.new
+      spec.backing_spec.datastore = dest_datacenter_mob
+      wait_for_task do
+        service_content.v_storage_object_manager.relocate_v_storage_object(
+          vslm_id,
+          source_datacenter_mob,
+          spec
+        )
+      end
+      logger.info('Moved first class disk')
+    end
+
     def move_disk(source_datacenter_mob, source_path, dest_datacenter_mob, dest_path)
+      require 'pry-byebug'
+      binding.pry
       create_parent_folder(dest_datacenter_mob, dest_path)
       logger.info("Moving disk: #{source_path} to #{dest_path}")
       wait_for_task do
@@ -276,30 +313,36 @@ module VSphereCloud
       result
     end
 
+    def find_fcd_disk(disk_cid, datastore)
+      vslm_id = VimSdk::Vim::Vslm::ID.new
+      vslm_id.id = disk_cid  # 'asdasd' Error running method 'RetrieveVStorageObject'. Failed with message 'A specified parameter was not correct: '.
+      vstorage_object = service_content.v_storage_object_manager.retrieve_v_storage_object(vslm_id, datastore.mob)
+      id =  vstorage_object.config.id.id
+      disk_size_in_mb = vstorage_object.config.capacity_in_mb
+      disk_size_in_mb.nil? ? nil : Resources::PersistentDisk.new(cid: id, size_in_mb: disk_size_in_mb, datastore: datastore, folder: nil)
+    end
+
     def find_disk(disk_cid, datastore, disk_folder)
       disk_size_in_mb = find_disk_size_using_browser(datastore, disk_cid, disk_folder)
       disk_size_in_mb.nil? ? nil : Resources::PersistentDisk.new(cid: disk_cid, size_in_mb: disk_size_in_mb, datastore: datastore, folder: disk_folder)
     end
 
-    def create_disk(datacenter_mob, datastore, disk_cid, disk_folder, disk_size_in_mb, disk_type)
-      raise 'no disk type specified' if disk_type.nil?
-      disk_path = "[#{datastore.name}] #{disk_folder}"
-
+    def create_fcd_disk(datastore, disk_cid, disk_size_in_mb, disk_type) # finished
+      disk_type = 'thin' if disk_type=="preallocated" # change default type. Might need to handle outside
       disk_spec = VimSdk::Vim::Vslm::CreateSpec.new
       disk_spec.backing_spec = VimSdk::Vim::Vslm::CreateSpec::DiskFileBackingSpec.new
       disk_spec.backing_spec.datastore = datastore.mob
-      disk_spec.backing_spec.path = disk_path
-      disk_spec.backing.provisioning_type=disk_type
-      disk_spec.capacity_in_mb=disk_size_in_mb
+      disk_spec.backing_spec.provisioning_type = disk_type
+      disk_spec.capacity_in_mb = disk_size_in_mb
       disk_spec.name=disk_cid
-
       result = wait_for_task do
         service_content.v_storage_object_manager.create_disk(disk_spec)
       end
-      return result.id.id
+      id =  result.config.id.id
+      Resources::PersistentDisk.new(cid: id, size_in_mb: disk_size_in_mb, datastore: datastore, folder: nil)
     end
 
-    def icreate_disk(datacenter_mob, datastore, disk_cid, disk_folder, disk_size_in_mb, disk_type)
+    def create_disk(datacenter_mob, datastore, disk_cid, disk_folder, disk_size_in_mb, disk_type)
       if disk_type.nil?
         raise 'no disk type specified'
       end

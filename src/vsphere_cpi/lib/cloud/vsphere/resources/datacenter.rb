@@ -13,7 +13,7 @@ module VSphereCloud
 
       def initialize(attrs)
         @client = attrs.fetch(:client)
-        @use_sub_folder = attrs.fetch(:use_sub_folder)
+        @use_sub_folder = attrs.fetch(:use_sub_folder)jobs/vsphere_cpi/specjobs/vsphere_cpi/spec
         @vm_folder = attrs.fetch(:vm_folder)
         @template_folder = attrs.fetch(:template_folder)
         @name = attrs.fetch(:name)
@@ -99,7 +99,15 @@ module VSphereCloud
         disk_cid = "disk-#{SecureRandom.uuid}"
         logger.debug("Creating disk '#{disk_cid}' in datastore '#{datastore.name}'")
 
-        @client.create_disk(mob, datastore, disk_cid, @disk_path, size_in_mb, disk_type)
+        require 'pry-byebug'
+        binding.pry
+
+        @client.create_fcd_disk(datastore, disk_cid, size_in_mb, disk_type)
+        # if @config.enable_first_class_disk
+        #   @client.create_fcd_disk(datastore, disk_cid, size_in_mb, disk_type)
+        # else
+        #   @client.create_disk(mob, datastore, disk_cid, @disk_path, size_in_mb, disk_type)
+        # end
       end
 
       # Find disk in cluster.accessible_datastores,
@@ -171,9 +179,20 @@ module VSphereCloud
       end
 
       def move_disk_to_datastore(disk, destination_datastore)
+        require 'pry-byebug'
+        binding.pry
+
         destination_path = "[#{destination_datastore.name}] #{@disk_path}/#{disk.cid}.vmdk"
         logger.info("Moving #{disk.path} to #{destination_path}")
-        @client.move_disk(mob, disk.path, mob, destination_path)
+
+        @client.move_fcd_disk(mob, disk.path, mob, destination_path, disk.cid)
+
+        # if @config.enable_first_class_disk
+        #   @client.move_fcd_disk(mob, disk.path, mob, destination_path, disk.cid)
+        # else
+        #   @client.move_disk(mob, disk.path, mob, destination_path)
+        # end
+
         logger.info('Moved disk successfully')
         Resources::PersistentDisk.new(cid: disk.cid, size_in_mb: disk.size_in_mb, datastore: destination_datastore, folder: @disk_path)
       end
@@ -190,9 +209,18 @@ module VSphereCloud
         datastores.each do |_, datastore|
           pool.process do
             begin
-              disk = @client.find_disk(disk_cid, datastore, @disk_path)
-              unless disk.nil?
 
+              require 'pry-byebug'
+              binding.pry
+
+              disk = @client.find_fcd_disk(disk_cid, datastore)
+              # if @config.enable_first_class_disk
+              #   disk = @client.find_fcd_disk(disk_cid, datastore)
+              # else
+              #   disk = @client.find_disk(disk_cid, datastore, @disk_path)
+              # end
+
+              unless disk.nil?
                 logger.debug("disk #{disk_cid} found in: #{datastore}")
                 raise FindSuccessfulException.new(disk)
               end

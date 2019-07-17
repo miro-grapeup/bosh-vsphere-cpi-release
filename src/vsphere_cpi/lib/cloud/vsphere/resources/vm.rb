@@ -9,12 +9,14 @@ module VSphereCloud
 
       stringify_with :cid
 
-      attr_reader :mob, :cid
+      attr_reader :mob, :cid, :config
 
-      def initialize(cid, mob, client)
+      # added @config to bring in config.first_class_disk
+      def initialize(cid, mob, client, config)
         @client = client
         @mob = mob
         @cid = cid
+        @config = config
       end
 
       def inspect
@@ -240,7 +242,49 @@ module VSphereCloud
         v_app_config.property.find { |property| property.key == key }
       end
 
-      def attach_disk(disk_resource_object)
+      def get_id_ds(disk_resource_object)
+        disk_id = VimSdk::Vim::Vslm::ID.new
+        disk_id.id = disk_resource_object.cid
+        ds = disk_resource_object.datastore
+        return disk_id, ds
+      end
+
+
+      def attach_disk(disk_resource_object, raw_director_disk_cid)
+
+        require 'pry-byebug'
+        binding.pry
+        if @config.enable_first_class_disk
+          attach_fcd_disk(disk_resource_object, raw_director_disk_cid)
+        else
+          attach_conventional_disk(disk_resource_object)
+        end
+      end
+
+      def attach_fcd_disk(disk_resource_object, raw_director_disk_cid)
+        disk = disk_resource_object
+        #disk_config_spec = disk.create_disk_attachment_spec(disk_controller_id: system_disk.controller_key)
+        disk_id, ds = get_id_ds(disk)
+        logger.info('Attaching first class disk')
+
+
+        begin
+          @client.wait_for_task do
+            mob.attach_disk(disk_id, ds.mob, system_disk.controller_key) #, system_disk.unit_number)
+          end
+        rescue => e
+          puts e
+        end
+        reload
+
+        unit_num = devices.detect do |d|
+          d.is_a?(VimSdk::Vim::Vm::Device::VirtualDisk) && d.v_disk_id&.id == disk_id.id
+        end.unit_number
+        logger.info('Finished attaching first class disk')
+        return unit_num
+      end
+
+      def attach_conventional_disk(disk_resource_object) # need to update
         disk = disk_resource_object
         disk_config_spec = disk.create_disk_attachment_spec(disk_controller_id: system_disk.controller_key)
 
@@ -257,10 +301,52 @@ module VSphereCloud
         logger.debug("Adding persistent disk property to vm '#{@cid}'")
         @client.add_persistent_disk_property_to_vm(self, disk)
         logger.debug('Finished adding persistent disk property to vm')
-        return disk_config_spec
+
+        # require 'pry-byebug'
+        # binding.pry
+        # disk.class VSphereCloud::Resources::PersistentDisk
+        #VimSdk::Vim::Vm::Device::VirtualDeviceSpec
+        return disk_config_spec.device.unit_number
       end
 
+
       def detach_disks(virtual_disks)
+        require 'pry-byebug'
+        binding.pry
+        if @config.enable_first_class_disk
+          detach_fcd_disks(virtual_disks)
+        else
+          detach_conventional_disks(virtual_disks)
+        end
+      end
+
+
+      def detach_fcd_disks(virtual_disks)
+        reload
+        check_for_nonpersistent_disk_modes  # what is non persistent disk mode, what should wen do
+        logger.info("Found #{virtual_disks.size} persistent disk(s)")
+        virtual_disks.each do |virtual_disk|
+          disk_id = VimSdk::Vim::Vslm::ID.new
+          disk_id.id = virtual_disk.cid
+          logger.info("Detaching first class disk #{virtual_disk.cid}")
+          @client.wait_for_task do
+            mob.detach_disk(disk_id)
+          end
+          logger.info("Detached #{virtual_disks.size} first class disk(s)")
+        end
+        logger.info('Finished detaching disk(s)')
+
+        virtual_disks.each do |disk|
+
+          devices.detect do |d|
+            d.v_disk_id= nil if d.is_a?(VimSdk::Vim::Vm::Device::VirtualDisk) && d.v_disk_id&.id == disk.cid
+            #d.v_disk_id&.id = nil
+          end
+        end
+        logger.debug('Finished deleting persistent disk properties from vm')
+      end
+
+      def detach_conventional_disks(virtual_disks) # need to update
         reload
         check_for_nonpersistent_disk_modes
 
@@ -304,6 +390,7 @@ module VSphereCloud
           dest_filename = original_disk_path.match(/^\[[^\]]+\] (.*)/)[1]
           dest_path = "[#{current_datastore}] #{dest_filename}"
 
+          # move fcd disk
           @client.move_disk(datacenter_mob, disk.backing.file_name, datacenter_mob, dest_path)
         end
       end
