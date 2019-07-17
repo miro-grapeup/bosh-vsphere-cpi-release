@@ -44,6 +44,9 @@ describe 'cloud_properties related to disks' do
   it 'creates an ephemeral disk with the default type' do
     cpi = VSphereCloud::Cloud.new(options)
     begin
+      require 'pry-byebug'
+      binding.pry
+
       vm_id = cpi.create_vm(
         'agent-007',
         @stemcell_id,
@@ -71,7 +74,11 @@ describe 'cloud_properties related to disks' do
   it 'creates a persistent disk with the default type' do
     cpi = VSphereCloud::Cloud.new(options)
     begin
+      require 'pry-byebug'
+      binding.pry
+
       disk_id = cpi.create_disk(128, {})
+
       expect(cpi.has_disk?(disk_id)).to be(true)
 
       yield_persistent_disk_mob(cpi, disk_id) do |disk_mob|
@@ -97,6 +104,9 @@ describe 'cloud_properties related to disks' do
     it 'creates an ephemeral disk with the specified default type' do
       cpi = VSphereCloud::Cloud.new(options)
       begin
+        require 'pry-byebug'
+        binding.pry
+
         vm_id = cpi.create_vm(
           'agent-007',
           @stemcell_id,
@@ -109,6 +119,8 @@ describe 'cloud_properties related to disks' do
 
         vm = cpi.vm_provider.find(vm_id)
         expect(vm).to_not be_nil
+        require 'pry-byebug'
+        binding.pry
 
         disk_mob = vm.ephemeral_disk
         backing = disk_mob.backing
@@ -123,6 +135,9 @@ describe 'cloud_properties related to disks' do
     it 'creates a persistent disk with the specified default type' do
       cpi = VSphereCloud::Cloud.new(options)
       begin
+        require 'pry-byebug'
+        binding.pry
+
         disk_id = cpi.create_disk(128, {})
         expect(cpi.has_disk?(disk_id)).to be(true)
 
@@ -148,6 +163,9 @@ describe 'cloud_properties related to disks' do
       it 'raises an error' do
         expect do
           cpi = VSphereCloud::Cloud.new(options)
+          require 'pry-byebug'
+          binding.pry
+
           cpi.create_vm(
             'agent-007',
             @stemcell_id,
@@ -167,6 +185,8 @@ describe 'cloud_properties related to disks' do
     it 'creates a persistent disk with the specified type' do
       cpi = VSphereCloud::Cloud.new(options)
       begin
+        require 'pry-byebug'
+        binding.pry
         disk_id = cpi.create_disk(128, disk_pool)
         expect(cpi.has_disk?(disk_id)).to be(true)
 
@@ -189,6 +209,8 @@ describe 'cloud_properties related to disks' do
     it 'places the disk in the specified datastore and does not move it when attached' do
       cpi = VSphereCloud::Cloud.new(options)
       begin
+        require 'pry-byebug'
+        binding.pry
         director_disk_id = cpi.create_disk(128, cloud_properties)
         director_disk_cid = VSphereCloud::DirectorDiskCID.new(director_disk_id)
         verify_disk_is_in_datastores(cpi, director_disk_cid.value, persistent_datastores)

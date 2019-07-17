@@ -13,7 +13,7 @@ module VSphereCloud
 
       def initialize(attrs)
         @client = attrs.fetch(:client)
-        @use_sub_folder = attrs.fetch(:use_sub_folder)jobs/vsphere_cpi/specjobs/vsphere_cpi/spec
+        @use_sub_folder = attrs.fetch(:use_sub_folder)
         @vm_folder = attrs.fetch(:vm_folder)
         @template_folder = attrs.fetch(:template_folder)
         @name = attrs.fetch(:name)

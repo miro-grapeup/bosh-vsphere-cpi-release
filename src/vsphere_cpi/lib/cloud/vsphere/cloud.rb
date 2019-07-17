@@ -601,9 +601,6 @@ module VSphereCloud
         vm = vm_provider.find(vm_cid)
         # to find the disk if disk is traditional disk
         disk = vm.disk_by_cid(director_disk_cid.value)
-        require 'pry-byebug'
-        binding.pry
-
         disk = @datacenter.find_disk(director_disk_cid) if  disk.nil? && @config.enable_first_class_disk
 
         raise Bosh::Clouds::DiskNotAttached.new(true), "Disk '#{director_disk_cid.value}' is not attached to VM '#{vm_cid}'" if disk.nil?
