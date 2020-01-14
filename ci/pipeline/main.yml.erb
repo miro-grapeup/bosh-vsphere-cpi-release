@@ -50,10 +50,10 @@ jobs:
           passed: [build-candidate]
       - do:
         - put: environment
-          resource: pool-6.5-NSXT21
+          resource: pool-6.5-NSXT25
           params: {acquire: true}
           on_failure:
-            put: pool-6.5-NSXT21
+            put: pool-6.5-NSXT25
             params : {release: environment}
         attempts: 4
 
@@ -63,7 +63,7 @@ jobs:
       - aggregate:
         - get: source-ci
         - {get: cpi-release,              trigger: false, resource: bosh-cpi-artifacts, passed: [lock-bats]}
-        - {get: environment,              trigger: true,  passed: [lock-bats], resource: pool-6.5-NSXT21}
+        - {get: environment,              trigger: true,  passed: [lock-bats], resource: pool-6.5-NSXT25}
         - {get: bosh-release,             trigger: false, resource: old-bosh-release}
         - {get: stemcell,                 trigger: false, version: {version: "3468.46"}, resource: stemcell}
         - {get: certification,            trigger: false}
@@ -93,7 +93,7 @@ jobs:
             STEMCELL_NAME:      bosh-vsphere-esxi-ubuntu-trusty-go_agent
         on_failure:
           aggregate:
-          - put: pool-6.5-NSXT21
+          - put: pool-6.5-NSXT25
             params : {remove: environment}
           - put: notify
             params:
@@ -112,9 +112,9 @@ jobs:
 
   - name: unlock-bats
     plan:
-      - {trigger: true, passed: [bats], get: pool-6.5-NSXT21}
-      - put: pool-6.5-NSXT21
-        params : {release: pool-6.5-NSXT21}
+      - {trigger: true, passed: [bats], get: pool-6.5-NSXT25}
+      - put: pool-6.5-NSXT25
+        params : {release: pool-6.5-NSXT25}
 
   - name: delivery
     plan:
