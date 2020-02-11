@@ -13,6 +13,7 @@ module VSphereCloud
       end
 
       def path
+        return "" if folder.nil?
         "[#{@datastore.name}] #{@folder}/#{@cid}.vmdk"
       end
 

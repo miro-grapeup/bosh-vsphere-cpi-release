@@ -582,7 +582,11 @@ module VSphereCloud
           storage_placement = storage_placement_enum.first
           raise "Unable to attach disk to the VM. There is no datastore matching pattern or required space available for disk to move" if storage_placement.nil?
           destination_datastore = @datacenter.find_datastore(storage_placement.name)
-          disk_to_attach = @datacenter.move_disk_to_datastore(disk_to_attach, destination_datastore)
+          if @config.enable_first_class_disk
+            disk_to_attach = @datacenter.move_fcd_disk_to_datastore(disk_to_attach, destination_datastore)
+          else
+            disk_to_attach = @datacenter.move_disk_to_datastore(disk_to_attach, destination_datastore)
+          end
         end
 
         unit_number = vm.attach_disk(disk_to_attach, raw_director_disk_cid)
@@ -650,7 +654,6 @@ module VSphereCloud
           next if disk.nil?
 
           logger.info("Created disk: #{disk.inspect}")
-          #raw_director_disk_cid = disk_pool.storage_list.any? ? DirectorDiskCID.encode(disk.cid, target_datastore_pattern: target_datastore_pattern) : disk.cid
           raw_director_disk_cid = DirectorDiskCID.encode(disk.cid, target_datastore_pattern: target_datastore_pattern)
           # Return disk cid for the created disk.
           return raw_director_disk_cid
@@ -664,13 +667,14 @@ module VSphereCloud
         director_disk_cid = DirectorDiskCID.new(raw_director_disk_cid)
         logger.info("Deleting disk: #{director_disk_cid.value}")
 
-        disk = @datacenter.find_disk(director_disk_cid) # hope can bring some value to indicate disk type fcd or not
-        require 'pry-byebug'
-        binding.pry
+        # The onus of promoting a disk to FCD
+        #   1. if it is a conventional disk and
+        #   2. fcd_disks are enabled lies on find disk function.
+        # It finds the disk and upgrades it if required.
+        disk = @datacenter.find_disk(director_disk_cid)
 
         if @config.enable_first_class_disk
-          client.delete_fcd_disk(disk.cid, disk.datastore.mob) # Vim::Datastore
-          #client.delete_fcd_disk(disk.cid, disk.datastore)
+          client.delete_fcd_disk(disk.cid, disk.datastore.mob)
         else
           client.delete_disk(@datacenter.mob, disk.path)
         end

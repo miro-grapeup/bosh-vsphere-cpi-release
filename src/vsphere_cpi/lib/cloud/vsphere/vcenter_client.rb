@@ -322,7 +322,7 @@ module VSphereCloud
 
     def find_fcd_disk(disk_cid, datastore)
       vslm_id = VimSdk::Vim::Vslm::ID.new
-      vslm_id.id = disk_cid  # 'asdasd' Error running method 'RetrieveVStorageObject'. Failed with message 'A specified parameter was not correct: '.
+      vslm_id.id = disk_cid
       vstorage_object = service_content.v_storage_object_manager.retrieve_v_storage_object(vslm_id, datastore.mob)
       id =  vstorage_object.config.id.id
       disk_size_in_mb = vstorage_object.config.capacity_in_mb
@@ -332,6 +332,18 @@ module VSphereCloud
     def find_disk(disk_cid, datastore, disk_folder)
       disk_size_in_mb = find_disk_size_using_browser(datastore, disk_cid, disk_folder)
       disk_size_in_mb.nil? ? nil : Resources::PersistentDisk.new(cid: disk_cid, size_in_mb: disk_size_in_mb, datastore: datastore, folder: disk_folder)
+    end
+
+    def promote_disk_to_fcd(disk)
+      begin
+        vstorage_object = service_content.v_storage_object_manager.register_disk(disk.path, disk.cid)
+      rescue => e
+        logger.error("Failed to promote vmdk #{disk.path} to FCD with #{e}")
+        raise e
+      end
+      id =  vstorage_object.config.id.id
+      disk_size_in_mb = vstorage_object.config.capacity_in_mb
+      disk_size_in_mb.nil? ? nil : Resources::PersistentDisk.new(cid: id, size_in_mb: disk_size_in_mb, datastore: datastore, folder: nil)
     end
 
     def create_fcd_disk(datastore, disk_cid, disk_size_in_mb, disk_type) # finished

@@ -99,15 +99,54 @@ module VSphereCloud
         disk_cid = "disk-#{SecureRandom.uuid}"
         logger.debug("Creating disk '#{disk_cid}' in datastore '#{datastore.name}'")
 
-        require 'pry-byebug'
-        binding.pry
+        if @config.enable_first_class_disk
+          @client.create_fcd_disk(datastore, disk_cid, size_in_mb, disk_type)
+        else
+          @client.create_disk(mob, datastore, disk_cid, @disk_path, size_in_mb, disk_type)
+        end
+      end
 
-        @client.create_fcd_disk(datastore, disk_cid, size_in_mb, disk_type)
-        # if @config.enable_first_class_disk
-        #   @client.create_fcd_disk(datastore, disk_cid, size_in_mb, disk_type)
-        # else
-        #   @client.create_disk(mob, datastore, disk_cid, @disk_path, size_in_mb, disk_type)
-        # end
+      def find_disk(director_disk_cid, vm=nil)
+        disk_cid = director_disk_cid.value
+        datastore_pattern = director_disk_cid.target_datastore_pattern
+        begin
+          disk = find_conventional_disk(disk_cid, datastore_pattern, vm)
+          if @config.enable_first_class_disk
+            disk = promote_disk_to_fcd(disk)
+          end
+          disk
+        rescue => Bosh::Clouds::DiskNotFound
+          find_fcd_disk(disk_cid, datastore_pattern)
+        end
+      end
+
+      def find_fcd_disk(disk_cid, datastore_pattern)
+        hint_datastores = {}
+        unless datastore_pattern.nil?
+          logger.debug("Looking for disk #{disk_cid} in datastores matching pattern #{datastore_pattern}")
+
+          regexp = Regexp.new(datastore_pattern)
+          hint_datastores = accessible_datastores.select do |name, _|
+            name =~ regexp
+          end
+          disk = find_fcd_disk_cid_in_datastores(disk_cid, hint_datastores)
+          return disk unless disk.nil?
+        end
+
+        logger.debug("Looking for disk #{disk_cid} in datastores matching persistent pattern #{persistent_pattern}")
+        regexp = Regexp.new(persistent_pattern)
+        persistent_datastores = accessible_datastores.select do |name, _|
+          name =~ regexp && !hint_datastores.key?(name)
+        end
+        disk = find_fcd_disk_cid_in_datastores(disk_cid, persistent_datastores)
+        return disk unless disk.nil?
+
+        other_datastores = accessible_datastores.reject do |datastore_name, _|
+          persistent_datastores.key?(datastore_name) || hint_datastores.key?(datastore_name)
+        end
+        logger.debug("Disk #{disk_cid} not found in filtered persistent datastores, trying other datastores: #{other_datastores}")
+        disk = find_fcd_disk_cid_in_datastores(disk_cid, other_datastores)
+        return disk unless disk.nil?
       end
 
       # Find disk in cluster.accessible_datastores,
@@ -115,9 +154,7 @@ module VSphereCloud
       # If disk is not found and vm is present, find disk in vm.accessible_datastores
       # @param [DirectorDiskCID] director_disk_cid
       # @param [Resources::VirtualMachine] vm
-      def find_disk(director_disk_cid, vm=nil)
-        disk_cid = director_disk_cid.value
-        datastore_pattern = director_disk_cid.target_datastore_pattern
+      def find_conventional_disk(disk_cid, datastore_pattern, vm)
         hint_datastores = {}
         unless datastore_pattern.nil?
           logger.debug("Looking for disk #{disk_cid} in datastores matching pattern #{datastore_pattern}")
@@ -162,13 +199,13 @@ module VSphereCloud
         logger.debug("Disk #{disk_cid} not found in all datastores, searching VM attachments")
         vm_mob = @client.find_vm_by_disk_cid(mob, disk_cid)
         unless vm_mob.nil?
-          vm = Resources::VM.new(vm_mob.name, vm_mob, @client)
+          vm = Resources::VM.new(vm_mob.name, vm_mob, @client, @config)
           disk_path = vm.disk_path_by_cid(disk_cid)
           unless disk_path.nil?
             datastore_name, disk_folder, disk_file = /\[(.+)\] (.+)\/(.+)\.vmdk/.match(disk_path)[1..3]
             datastore = accessible_datastores[datastore_name]
             raise Bosh::Clouds::DiskNotFound.new(false),
-              "Could not find disk with id '#{disk_cid}'. Datastore '#{datastore_name}' is not accessible." if datastore.nil?
+                  "Could not find disk with id '#{disk_cid}'. Datastore '#{datastore_name}' is not accessible." if datastore.nil?
             disk = @client.find_disk(disk_file, datastore, disk_folder)
 
             logger.debug("Disk #{disk_cid} found at new location: #{disk.path}") unless disk.nil?
@@ -179,19 +216,22 @@ module VSphereCloud
       end
 
       def move_disk_to_datastore(disk, destination_datastore)
-        require 'pry-byebug'
-        binding.pry
-
         destination_path = "[#{destination_datastore.name}] #{@disk_path}/#{disk.cid}.vmdk"
         logger.info("Moving #{disk.path} to #{destination_path}")
 
         @client.move_fcd_disk(mob, disk.path, mob, destination_path, disk.cid)
 
-        # if @config.enable_first_class_disk
-        #   @client.move_fcd_disk(mob, disk.path, mob, destination_path, disk.cid)
-        # else
-        #   @client.move_disk(mob, disk.path, mob, destination_path)
-        # end
+        @client.move_disk(mob, disk.path, mob, destination_path)
+
+        logger.info('Moved disk successfully')
+        Resources::PersistentDisk.new(cid: disk.cid, size_in_mb: disk.size_in_mb, datastore: destination_datastore, folder: @disk_path)
+      end
+
+      def move_fcd_disk_to_datastore(disk, destination_datastore)
+        destination_path = "[#{destination_datastore.name}] #{@disk_path}/#{disk.cid}.vmdk"
+        logger.info("Moving #{disk.path} to #{destination_path}")
+
+        @client.move_fcd_disk(mob, disk.path, mob, destination_path, disk.cid)
 
         logger.info('Moved disk successfully')
         Resources::PersistentDisk.new(cid: disk.cid, size_in_mb: disk.size_in_mb, datastore: destination_datastore, folder: @disk_path)
@@ -209,16 +249,46 @@ module VSphereCloud
         datastores.each do |_, datastore|
           pool.process do
             begin
+              disk = @client.find_disk(disk_cid, datastore, @disk_path)
+              unless disk.nil?
+                logger.debug("disk #{disk_cid} found in: #{datastore}")
+                raise FindSuccessfulException.new(disk)
+              end
+            rescue => e
+              mutex.synchronize do
+                error = e if error.nil?
+              end
+            end
+          end
+        end
 
-              require 'pry-byebug'
-              binding.pry
+        begin
+          pool.resume
+          pool.wait
+        rescue FindSuccessfulException => e
+          return e.result
+        ensure
+          pool.shutdown
+        end
+
+        raise error unless error.nil?
+
+        nil
+      end
+
+
+      def find_fcd_disk_cid_in_datastores(disk_cid, datastores)
+        mutex = Mutex.new
+        error = nil
+
+        pool = Bosh::ThreadPool.new(max_threads: 5, logger: logger)
+        pool.pause
+
+        datastores.each do |_, datastore|
+          pool.process do
+            begin
 
               disk = @client.find_fcd_disk(disk_cid, datastore)
-              # if @config.enable_first_class_disk
-              #   disk = @client.find_fcd_disk(disk_cid, datastore)
-              # else
-              #   disk = @client.find_disk(disk_cid, datastore, @disk_path)
-              # end
 
               unless disk.nil?
                 logger.debug("disk #{disk_cid} found in: #{datastore}")
@@ -247,6 +317,8 @@ module VSphereCloud
       end
     end
   end
+
+
 
   class FindSuccessfulException < Exception
     attr_reader :result

@@ -255,7 +255,6 @@ module VSphereCloud
 
 
       def attach_disk(disk_resource_object, raw_director_disk_cid)
-
         # got error here , need fix
         if @config.enable_first_class_disk
           attach_fcd_disk(disk_resource_object, raw_director_disk_cid)
