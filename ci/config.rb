@@ -58,3 +58,12 @@ $pipeline.pool('7.0-NSXT30') do |pool|
       NSXT_SKIP_SSL_VERIFY: "true"
   }
 end
+
+$pipeline.pool('6.7-NSXT23') do |pool|
+  pool.params = {
+      RSPEC_FLAGS: [
+          '--tag nsx_transformers'
+      ].join(' '),
+      NSXT_SKIP_SSL_VERIFY: "true"
+  }
+end
