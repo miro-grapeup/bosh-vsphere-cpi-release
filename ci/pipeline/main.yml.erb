@@ -24,6 +24,7 @@ jobs:
         passed:
         - lifecycle-6.0-NSXV
         - lifecycle-6.5-NSXT24
+        - lifecycle-6.7-NSXT22
         - lifecycle-6.5-NSXT25
         - lifecycle-6.7-NSXT24
         - lifecycle-6.7-NSXT25
@@ -129,6 +130,7 @@ jobs:
         - lifecycle-6.5-NSXT25
         - lifecycle-6.7-NSXT24
         - lifecycle-6.7-NSXT23
+        - lifecycle-6.7-NSXT22
         - lifecycle-6.7-NSXT25
         - lifecycle-7.0-NSXT30
         - bats
@@ -191,6 +193,13 @@ resources:
       uri:          git@gitlab.eng.vmware.com:PKS/vcpi-pool.git
       branch:       master
       pool:         v6.5-nsxt25
+      private_key:  {{vcpi-pool_deployment_key}}
+  - name: pool-6.7-NSXT22
+    type: pool
+    source:
+      uri:          git@gitlab.eng.vmware.com:PKS/vcpi-pool.git
+      branch:       master
+      pool:         v6.7-nsxt22
       private_key:  {{vcpi-pool_deployment_key}}
   - name: pool-6.5-NSXT24
     type: pool
@@ -338,6 +347,9 @@ groups:
   - lifecycle-6.7-NSXT23
   - lock-6.7-NSXT23
   - unlock-6.7-NSXT23
+  - lifecycle-6.7-NSXT22
+  - lock-6.7-NSXT22
+  - unlock-6.7-NSXT22
 
 - name: Delivery
   jobs:
@@ -348,6 +360,7 @@ groups:
   - lifecycle-6.0-NSXV
   - lifecycle-7.0-NSXT30
   - lifecycle-6.7-NSXT23
+  - lifecycle-6.7-NSXT22
   - bats
   - delivery
 
@@ -387,6 +400,9 @@ groups:
   - unlock-6.7-NSXT23
   - lifecycle-6.7-NSXT23
   - lock-6.7-NSXT23
+  - lifecycle-6.7-NSXT22
+  - lock-6.7-NSXT22
+  - unlock-6.7-NSXT22
 
 - name: v7.0
   jobs:
