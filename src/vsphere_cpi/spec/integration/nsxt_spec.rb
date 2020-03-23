@@ -83,7 +83,19 @@ describe 'CPI', nsx_transformers: true do
     {
       'ram' => 512,
       'disk' => 2048,
-      'cpu' => 1
+      'cpu' => 1,
+      'nsxt' => {
+          'lb' => {
+              'server_pools' => [
+                  {
+                      'name' => server_pool_name_1,
+                  },
+                  {
+                      'name' => server_pool_name_2,
+                  }
+              ]
+          }
+      }
     }
   end
   let(:network_spec) do
@@ -106,19 +118,22 @@ describe 'CPI', nsx_transformers: true do
       }
     }
   end
+  let(:port_no) { '443' }
 
   describe 'on create_vm' do
-    context 'when global default_vif_type is set', nsxt_21: true do
-      # This works exclusively with cert/key pair
-      # Utilizes the CPI code in NSXTApiClientBuilder
-      let(:cpi) do
-        VSphereCloud::Cloud.new(cpi_options(nsxt: {
+
+    let(:cpi) do
+      VSphereCloud::Cloud.new(cpi_options(nsxt: {
           host: @nsxt_host,
           auth_certificate: @certificate.to_s,
           auth_private_key: @private_key.to_s,
           default_vif_type: 'PARENT'
-        }))
-      end
+      }))
+    end
+
+    context 'when global default_vif_type is set', nsxt_21: true do
+      # This works exclusively with cert/key pair
+      # Utilizes the CPI code in NSXTApiClientBuilder
 
       it 'sets vif_type for logical ports' do
         simple_vm_lifecycle(cpi, '', vm_type, network_spec) do |vm_id|
@@ -228,6 +243,15 @@ describe 'CPI', nsx_transformers: true do
     end
 
     context 'when server_pools are specified', nsxt_21: true do
+      let(:cpi) do
+        VSphereCloud::Cloud.new(cpi_options(nsxt: {
+            host: @nsxt_host,
+            auth_certificate: @certificate.to_s,
+            auth_private_key: @private_key.to_s,
+            default_vif_type: 'PARENT'
+        }))
+      end
+=begin
       let(:port_no) { '443' }
       let(:vm_type) do
         {
@@ -248,6 +272,7 @@ describe 'CPI', nsx_transformers: true do
           }
         }
       end
+=end
       context 'but atleast one server pool does not exists' do
         it 'raises an error' do
           expect do
@@ -266,18 +291,31 @@ describe 'CPI', nsx_transformers: true do
           delete_nsgroup(nsgroup_1)
         end
 
+        shared_examples 'find pool member' do |server_pool_1, vm_ip, has_port_no|
+          it 'finds a pool member' do
+            if has_port_no
+              server_pool_1_members = find_pool_members(server_pool_1, vm_ip, port_no)
+              expect(server_pool_1_members.count).to eq(1)
+            else
+              server_pool_1_members = find_pool_members(server_pool_1, vm_ip)
+              expect(server_pool_1_members.count).to eq(1)
+            end
+          end
+        end
+
         it 'adds vm to existing static server pools and adds all logical ports of the VM to NSGroups associated with the dynamic server pool' do
           simple_vm_lifecycle(cpi, @nsxt_opaque_vlan_1, vm_type) do |vm_id|
             vm = cpi.vm_provider.find(vm_id)
             vm_ip = vm.mob.guest&.ip_address
             expect(vm_ip).to_not be_nil
-            server_pool_1_members = find_pool_members(server_pool_1, vm_ip, port_no)
-            expect(server_pool_1_members.count).to eq(1)
-            verify_ports(vm_id, 1) do |lport|
-              expect(lport).not_to be_nil
-
-              expect(nsgroup_effective_logical_port_member_ids(nsgroup_1)).to include(lport.id)
-            end
+            include_examples 'find pool member', server_pool_1, vm_ip, true
+            include_examples 'find pool member', server_pool_1, vm_ip, false
+          end
+        end
+        it 'adds vm to existing static server pools and adds all logical ports of the VM to NSGroups associated with the dynamic server pool' do
+          verify_ports(vm_id, 1) do |lport|
+            expect(lport).not_to be_nil
+            expect(nsgroup_effective_logical_port_member_ids(nsgroup_1)).to include(lport.id)
           end
         end
         it 'adds vm to all existing static server pools with given name' do
@@ -301,6 +339,14 @@ describe 'CPI', nsx_transformers: true do
   end
 
   describe 'on delete_vm' do
+    let(:cpi) do
+      VSphereCloud::Cloud.new(cpi_options(nsxt: {
+          host: @nsxt_host,
+          auth_certificate: @certificate.to_s,
+          auth_private_key: @private_key.to_s,
+          default_vif_type: 'PARENT'
+      }))
+    end
     let(:vm_type) do
       {
         'ram' => 512,
@@ -531,10 +577,15 @@ describe 'CPI', nsx_transformers: true do
     services_svc.create_load_balancer_pool(server_pool)
   end
 
-  def find_pool_members(server_pool, ip_address, port_no)
+  def find_pool_members(server_pool, ip_address, port_no = 443)
     server_pool = services_svc.read_load_balancer_pool(server_pool.id)
     server_pool.members.select do |member|
-      member.ip_address == ip_address
+      if port_no do
+        member.ip_address == ip_address && member.port == port_no
+      end
+      else
+        member.ip_address == ip_address
+      end
     end
   end
 
