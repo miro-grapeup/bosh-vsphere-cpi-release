@@ -85,6 +85,9 @@ module VSphereCloud
     end
   end
 
+  class NSXTOptimisticUpdateError < StandardError
+  end
+
   class NSXTProvider
     include Logger
 
@@ -118,26 +121,30 @@ module VSphereCloud
     def add_vm_to_nsgroups(vm, ns_groups)
       return if ns_groups.nil? || ns_groups.empty?
       return if nsxt_nics(vm).empty?
-
+      lports = logical_ports(vm)
       logger.info("Adding vm '#{vm.cid}' to NSGroups: #{ns_groups}")
       nsgroups = retrieve_nsgroups(ns_groups)
-
-      lports = logical_ports(vm)
       nsgroups.each do |nsgroup|
         logger.info("Adding LogicalPorts: #{lports.map(&:id)} to NSGroup '#{nsgroup.id}'")
-        grouping_obj_svc.add_or_remove_ns_group_expression(
-          nsgroup.id,
-          *to_simple_expressions(lports),
-          'ADD_MEMBERS'
-        )
+        Bosh::Retryable.new(
+            tries: 50,
+            on: [NSXTOptimisticUpdateError]
+        ).retryer do |i|
+          grouping_obj_svc.add_or_remove_ns_group_expression(
+            nsgroup.id,
+            *to_simple_expressions(lports),
+            'ADD_MEMBERS'
+          )
+        rescue NSXT::ApiCallError => e
+          raise NSXTOptimisticUpdateError if e.code == 409 || e.code == 412 #Conflict or PreconditionFailed
+          raise
+        end
       end
     end
 
     def remove_vm_from_nsgroups(vm)
       return if nsxt_nics(vm).empty?
-
       lports = logical_ports(vm)
-
       lport_ids = lports.map(&:id)
       nsgroups = retrieve_all_ns_groups_with_pagination.select do |nsgroup|
         nsgroup.members&.any? do |member|
@@ -146,14 +153,21 @@ module VSphereCloud
             lport_ids.include?(member.value)
         end
       end
-
       nsgroups.each do |nsgroup|
         logger.info("Removing LogicalPorts: #{lport_ids} to NSGroup '#{nsgroup.id}'")
-        grouping_obj_svc.add_or_remove_ns_group_expression(
-          nsgroup.id,
-          *to_simple_expressions(lports),
-          'REMOVE_MEMBERS'
-        )
+        Bosh::Retryable.new(
+            tries: 50,
+            on: [NSXTOptimisticUpdateError]
+        ).retryer do |i|
+          grouping_obj_svc.add_or_remove_ns_group_expression(
+            nsgroup.id,
+            *to_simple_expressions(lports),
+            'REMOVE_MEMBERS'
+          )
+        rescue NSXT::ApiCallError => e
+          raise NSXTOptimisticUpdateError if e.code == 409 || e.code == 412 #Conflict or PreconditionFailed
+          raise
+        end
       end
     end
 
