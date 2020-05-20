@@ -120,7 +120,6 @@ module VSphereCloud
 
     def add_vm_to_nsgroups(vm, ns_groups)
       return if ns_groups.nil? || ns_groups.empty?
-      return if nsxt_nics(vm).empty?
       lports = logical_ports(vm)
       logger.info("Adding vm '#{vm.cid}' to NSGroups: #{ns_groups}")
       nsgroups = retrieve_nsgroups(ns_groups)
@@ -143,7 +142,6 @@ module VSphereCloud
     end
 
     def remove_vm_from_nsgroups(vm)
-      return if nsxt_nics(vm).empty?
       lports = logical_ports(vm)
       lport_ids = lports.map(&:id)
       nsgroups = retrieve_all_ns_groups_with_pagination.select do |nsgroup|
@@ -173,7 +171,6 @@ module VSphereCloud
 
     def update_vm_metadata_on_logical_ports(vm, metadata)
       return unless metadata.has_key?('id')
-      return if nsxt_nics(vm).empty?
 
       logical_ports(vm).each do |logical_port|
         loop do
@@ -205,7 +202,6 @@ module VSphereCloud
     def set_vif_type(vm, vm_type_nsxt)
       vif_type = (vm_type_nsxt || {}).has_key?('vif_type') ? vm_type_nsxt['vif_type'] : @default_vif_type
       return if vif_type.nil?
-      return if nsxt_nics(vm).empty?
       ports = logical_ports(vm)
       ports.each do |logical_port|
         logger.info("Setting VIF attachment on logical port #{logical_port.id} to have vif_type '#{vif_type}'")
