@@ -394,8 +394,9 @@ module VSphereCloud
 
     def nsxt_nics(vm)
       nics = vm.nics.select do |nic|
-        nic.backing.is_a?(VimSdk::Vim::Vm::Device::VirtualEthernetCard::OpaqueNetworkBackingInfo) &&
-          nic.backing.opaque_network_type == NSXT_LOGICAL_SWITCH
+        unless nic.external_id.nil? || nic.external_id.empty?
+          logger.info("NSXT backed switch found")
+        end
       end
       logger.info("NSX-T networks found for vm '#{vm.cid}': #{nics.map(&:device_info).map(&:summary)}")
 
