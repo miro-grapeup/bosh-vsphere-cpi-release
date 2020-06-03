@@ -257,13 +257,31 @@ module VSphereCloud
       if matching_networks.length == 1
         target_network = matching_networks.first
       elsif matching_networks.length > 1
-        # pick the Standard Portgroup if multiple networks exist with the given name
-        target_network = matching_networks.find { |n| n.instance_of?(VimSdk::Vim::Network) }
+        if $vc_version == '7.0'
+          # If it is VC 7.0, then NSXT 3.0 can configure same Logical switch as separate dvpgs
+          # under each VC cluster's VDS. But all such dvpg map back to same LS in NSXT.
+          # Hence, disambiguation is needed
+          # Check if all portgroups are actually same by checking these conditions
+          # 1. Network type is DVPG
+          # 2. Network has nsx backing type
+          # 3. Logical Switch ID for DVPG exists && it is same for all (Same as first newtwork in list)
+          target_network = matching_networks.first if matching_networks.all? do |n|
+            n.is_a?(VimSdk::Vim::Dvs::DistributedVirtualPortgroup) &&
+            n.config.backing_type == 'nsx' &&
+            !n.config.logical_switch_uuid.nil? &&
+            n.config.logical_switch_uuid == matching_networks.first.config.logical_switch_uuid
+          end
+        end
+        # if it is still nil, try to find a standard vSphere Network and return that.
+        if target_network.nil?
+          # pick the Standard Portgroup if multiple networks exist with the given name
+          target_network = matching_networks.find { |n| n.instance_of?(VimSdk::Vim::Network) }
+        end
+        # Raise error if still ambiguous
         if target_network.nil?
           raise "Multiple networks found for #{network_name}. Please specify the full path, for example 'FOLDER_NAME/DISTRIBUTED_SWITCH_NAME/DISTRIBUTED_PORTGROUP_NAME'"
         end
       end
-
       target_network
     end
 
