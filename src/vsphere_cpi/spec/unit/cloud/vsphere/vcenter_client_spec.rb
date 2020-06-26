@@ -501,6 +501,48 @@ module VSphereCloud
       end
     end
 
+    describe '#find_network' do
+      let(:datacenter) {instance_double('VSphereCloud::Resources::Datacenter') }
+      let(:network_name) { 'network_1' }
+      let(:network_name_1) { 'container_path/network_1' }
+      let(:network_mob) { VimSdk::Vim::Network.new(name: network_name) }
+
+      context 'when container is specified' do
+
+        let (:networks) { 'network_1' }
+
+        before do
+          allow(network_name_1).to receive(:split).and_return('container_path', networks)
+        end
+
+        context 'when there is only one candidate network' do
+          it 'returns the network when container is a DVS' do
+            container = VimSdk::Vim::Dvs::VmwareDistributedVirtualSwitch
+            allow(client).to receive(:find_by_inventory_path).and_return(container)
+            allow(client).to receive(:find_child_by_name).and_return(container)
+            allow(container).to receive(:portgroup).and_return(networks)
+            allow(networks).to receive(:select!).and_return(true)
+
+            expect do
+              client.find_network(datacenter, network_name_1).to_eq(networks)
+            end
+          end
+
+          it 'returns the network when container is a folder' do
+            container = VimSdk::Vim::Folder
+            allow(client).to receive(:find_by_inventory_path).and_return(container)
+            allow(client).to receive(:find_child_by_name).and_return(container)
+            allow(container).to receive(:child_entity).and_return(networks)
+            allow(networks).to receive(:select!).and_return(true)
+
+            expect do
+              client.find_network(datacenter, network_name_1).to_eq(networks)
+            end
+          end
+        end
+      end
+    end
+
     describe '#find_disk_size_using_browser?' do
       let(:datastore) { instance_double(Resources::Datastore, name: 'fake-datastore') }
       let(:datastore_mob) { instance_double(VimSdk::Vim::Datastore) }
