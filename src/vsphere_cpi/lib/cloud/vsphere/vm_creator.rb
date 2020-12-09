@@ -101,7 +101,7 @@ module VSphereCloud
               replicated_stemcell_vm.pci_controller.key,
               dvs_index
             )
-            if @config.nsxt_enabled? && @nsxt_config.use_policy_api? && network.is_a?(VimSdk::Vim::OpaqueNetwork)
+            if !@nsxt_config.nil? && @nsxt_config.use_policy_api? && network.is_a?(VimSdk::Vim::OpaqueNetwork)
               tags = OpenStruct.new(vm_name: vm_config.name,  network_index: index, segment: network_name)
               vif_attach_id = @nsxt_policy_provider.create_segment_port segment: network_name, tags: tags
               virtual_nic.external_id = vif_attach_id
