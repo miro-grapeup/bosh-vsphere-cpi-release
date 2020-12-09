@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This action is used to delete header fields of HTTP response messages at HTTP_RESPONSE_REWRITE phase. One action can be used to delete allgi headers with same header name. To delete headers with different header names, multiple actions must be defined. 
   class LBHttpResponseHeaderDeleteAction
     # The property identifies the load balancer rule action type. 
@@ -189,7 +189,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This condition is used to match TCP header fields of HTTP messages. Currently, only the TCP source port is supported. Ports can be expressed as a single port number like 80, or a port range like 1024-1030. 
   class LBTcpHeaderCondition
     # A flag to indicate whether reverse the match result of this condition
@@ -201,7 +201,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

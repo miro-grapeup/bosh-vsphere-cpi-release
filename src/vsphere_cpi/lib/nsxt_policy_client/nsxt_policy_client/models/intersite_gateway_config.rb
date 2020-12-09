@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Intersite gateway configuration.
   class IntersiteGatewayConfig
     # IPv4 subnet for inter-site transit segment connecting service routers across sites for stretched gateway. For IPv6 link local subnet is auto configured. 
@@ -184,7 +184,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

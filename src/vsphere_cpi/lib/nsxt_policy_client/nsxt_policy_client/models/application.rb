@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Application is a collection of Tiers where every tier shares common Security and networking requirements. Application API exposes self service model of consumption. 
   class Application
     # Link to this resource
@@ -397,7 +397,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

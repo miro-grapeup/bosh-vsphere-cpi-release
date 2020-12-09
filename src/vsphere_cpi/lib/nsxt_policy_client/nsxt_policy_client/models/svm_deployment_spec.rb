@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Deployment Specs holds information required to deploy the Service-VMs.i.e. OVF url where the partner Service-VM OVF is hosted. The host type on which the OVF(Open Virtualization Format) can be deployed, Form factor to name a few.
   class SVMDeploymentSpec
     # Location of the partner VM OVF to be deployed.
@@ -247,7 +247,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

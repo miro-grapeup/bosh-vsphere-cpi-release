@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Tooltip to be shown while hovering over the dashboard UI element.
   class Tooltip
     # Text to be shown on tooltip while hovering over UI element. The text would be wrapped if it exceeds 80 chars.
@@ -194,7 +194,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

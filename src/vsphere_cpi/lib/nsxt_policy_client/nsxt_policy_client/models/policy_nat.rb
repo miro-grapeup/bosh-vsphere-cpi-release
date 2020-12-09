@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Represents NAT section. This object is created by default when corresponding tier-0/tier-1 is created. Under tier-0/tier-1 there will be 4 different NATs(sections). (INTERNAL, USER, DEFAULT and NAT64). 
   class PolicyNat
     # Link to this resource
@@ -429,7 +429,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

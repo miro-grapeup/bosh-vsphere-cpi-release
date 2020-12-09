@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # L2VPN Session Data represents meta data necessary to create the L2VPN Session. It is represented by an array of peer code for each tunnel. 
   class L2VPNSessionData
     # Enable to extend all the associated segments.
@@ -199,7 +199,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

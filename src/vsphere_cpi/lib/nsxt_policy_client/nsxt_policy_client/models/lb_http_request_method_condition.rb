@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This condition is used to match method of HTTP requests. If the method of an HTTP request is same as the method specified in this condition, the HTTP request match this condition. For example, if the method field is set to GET in this condition, any HTTP request with GET method matches the condition. 
   class LBHttpRequestMethodCondition
     # A flag to indicate whether reverse the match result of this condition
@@ -213,7 +213,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This holds the request parameters required to invoke export task. 
   class ExportRequestParameter
     # Policy path of a draft which is to be exported. If not provided, current firewall configuration will then be exported. 
@@ -160,7 +160,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

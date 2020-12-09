@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Represents configuration for custom widget. For this widget the data source is not applicable. It defines ui identifer to identify UI component and render it on dashboard view. This configuration can only be used for system owned widgets.
   class CustomWidgetConfiguration
     # Link to this resource
@@ -541,7 +541,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

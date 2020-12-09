@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Information related to Sites applicable for given VHC.
   class SiteInfo
     # For the local manager this needs to be set to 'default'. This represents the path of the site which is managed by Global Manager. 
@@ -169,7 +169,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

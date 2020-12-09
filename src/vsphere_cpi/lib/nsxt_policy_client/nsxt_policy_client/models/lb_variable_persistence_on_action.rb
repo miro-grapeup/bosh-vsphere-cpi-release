@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This action is performed in HTTP forwarding phase. It is used to inspect the variable of HTTP request, and look up the persistence entry with its value and pool uuid as key. If the persistence entry is found, the HTTP request is forwarded to the recorded backend server according to the persistence entry. If the persistence entry is not found, a new entry is created in the table after backend server is selected. 
   class LBVariablePersistenceOnAction
     # The property identifies the load balancer rule action type. 
@@ -211,7 +211,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

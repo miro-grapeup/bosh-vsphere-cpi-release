@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Paginated result of aggregated configuration of a policy draft 
   class PolicyDraftPaginatedAggregatedConfigurationResult
     # Paginated aggregated configuration of a given draft. For an initial API call, if request_id is present in response, then this is a paginated aggregated configuration of a given draft. To get more granular aggregated configuration, request_id need to be passed to subsequent API calls. Absence of request_id suggests that whole aggregated configuration has been returned as a response to initial API call, as the size of aggregated configuration is not big enough to need pagination. 
@@ -145,7 +145,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

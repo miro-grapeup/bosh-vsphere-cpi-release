@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # A 'tier' is a set of workloads that share common networking and security services. Tiers provide a specific function for an application and are thus a collection of compute with their associated services. 
   class ApplicationTier
     # Link to this resource
@@ -465,7 +465,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This type of subnet allows user to dynamically carve a subnet out of a preconfigured IpAddressBlock. The user must specify the size of the subnet and the IpAddressBlock from which the subnet is to be derived. If the required amount of IP adress space is available in the specified IpAddressBlock, the system automatically configures subnet range.
   class IpAddressPoolBlockSubnet
     # Link to this resource
@@ -476,7 +476,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

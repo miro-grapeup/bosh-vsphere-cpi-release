@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Virtual server acts as a facade to an application, receives all client connections over a specified protocol and distributes them among the backend servers.  This custom type allows for more complex settings than the simplified PolicyLbVirtualServer types.  This object allows for complex configurations for PolicyLbVirtualServers of all types. All HTTP specific inputs will be rejected when combined with TPC or UDP protocols. 
   class CustomPolicyLbVirtualServer
     # Link to this resource
@@ -622,7 +622,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

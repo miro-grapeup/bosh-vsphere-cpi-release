@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Only support IP address or subnet. Its type can be of IPv4 or IPv6. It will be converted to subnet when netmask is specified(e.g., 192.168.1.3/24 => 192.168.1.0/24, 2008:12:12:12::2/64 => 2008:12:12:12::/64). 
   class IpInfo
     # The source IP address or subnet
@@ -145,7 +145,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

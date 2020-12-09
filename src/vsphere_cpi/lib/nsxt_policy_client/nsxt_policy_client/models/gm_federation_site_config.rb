@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Additional configuration required for federation at Site.
   class GmFederationSiteConfig
     # IP Addresses to be allocated for transit segment when the gateway is stretched. Note that Global Manager will carve out the IP Pool for each site to be used for edge nodes when gateway is stretched based on the user provided subnet and maximum number of edge nodes allowed per site. 
@@ -135,7 +135,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # A Security Zone establishes the policies that govern the connectivity of application tiers. While applications run in a self-service mode, the security zone policies constrain the connectivity based on the security requirements of that zone. In Policy Applications, each application tier is associated with a security zone that should be pre-created by the VHC admin. 
   class SecurityZone
     # Link to this resource
@@ -397,7 +397,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

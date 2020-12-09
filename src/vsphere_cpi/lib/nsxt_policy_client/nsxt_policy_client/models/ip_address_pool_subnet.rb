@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # IpAddressPoolSubnet can either be carved out of a PolicyBlock or statically specified by the user. In the first case where the subnet is carved out of a IpAddressBlock, the user must specify the ID of the block from which this subnet is to be derived. This block must be pre-created. The subnet range is auto populated by the system. In the second case, the user configures the subnet range directly. No IpAddressBlock is required.
   class IpAddressPoolSubnet
     # Link to this resource
@@ -424,7 +424,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

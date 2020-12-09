@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Source Field Evaluation represents an evaluation on resource fields. A source field evaluation will be evaluated against an Event Source which is of type Resource Operation. For instance, the attribute constraint could be related to the necessity that one of the source fields equals one of the specified values. 
   class SourceFieldEvaluation
     # Criterion Evaluation resource type. 
@@ -233,7 +233,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

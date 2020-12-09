@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Status for IPSec VPN Ike session UP, DOWN, NEGOTIATING and fail reason if Ike session is down. 
   class IPSecVpnIkeSessionStatus
     # Reason for failure. 
@@ -179,7 +179,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

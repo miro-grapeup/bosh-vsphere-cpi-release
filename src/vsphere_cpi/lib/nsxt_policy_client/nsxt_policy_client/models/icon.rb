@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Icon to be applied at dashboard for widgets and UI elements.
   class Icon
     # If specified as PRE, the icon appears before the UI element. If set as POST, the icon appears after the UI element.
@@ -205,7 +205,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

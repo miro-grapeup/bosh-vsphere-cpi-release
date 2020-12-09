@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Configuration field to hold BGP restart timers
   class BgpGracefulRestartTimer
     # Maximum time taken (in seconds) for a BGP session to be established after a restart. This can be used to speed up routing convergence by its peer in case the BGP speaker does not come back up after a restart. If the session is not re-established within this timer,  the receiving speaker will delete all the stale routes from that peer. 
@@ -197,7 +197,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

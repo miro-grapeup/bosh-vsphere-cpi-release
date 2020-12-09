@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Related attribute on the target resource for conditional constraints based on related attribute value. Example - destinationGroups/service/action is related attribute of   sourceGroups in communcation entry. 
   class RelatedAttribute
     # Related attribute name on the target entity.
@@ -140,7 +140,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

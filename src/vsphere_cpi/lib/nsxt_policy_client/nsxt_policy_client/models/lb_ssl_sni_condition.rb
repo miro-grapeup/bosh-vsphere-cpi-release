@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This condition is used to match SSL SNI in client hello. This condition is only supported in TRANSPORT phase and HTTP_FORWARDING. 
   class LBSslSniCondition
     # A flag to indicate whether reverse the match result of this condition
@@ -237,7 +237,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

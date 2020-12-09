@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This action is used to create a new variable and assign value to it. One action can be used to create one variable. To create multiple variables, multiple actions must be defined. The variables can be used by LBVariableCondition, etc. 
   class LBVariableAssignmentAction
     # The property identifies the load balancer rule action type. 
@@ -204,7 +204,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

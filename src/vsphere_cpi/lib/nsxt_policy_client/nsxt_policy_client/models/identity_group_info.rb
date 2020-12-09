@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Identity (Directory) group
   class IdentityGroupInfo
     # Each LDAP object is uniquely identified by its distinguished name (DN). A DN is a sequence of relative distinguished names (RDN) connected by commas. e.g. CN=Larry Cole,CN=admin,DC=corp,DC=acme,DC=com. A valid fully qualified distinguished name should be provided to include specific groups else the create / update realization of the Group containing an invalid/ partial DN will fail. This value is valid only if it matches to exactly 1 LDAP object on the LDAP server. 
@@ -165,7 +165,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

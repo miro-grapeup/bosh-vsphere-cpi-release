@@ -17,7 +17,7 @@ require 'tempfile'
 require 'typhoeus'
 require 'uri'
 
-module NSXT
+module NSXTPolicy
   class ApiClient
     # The Configuration object holding settings to be used in the API client.
     attr_accessor :config
@@ -216,7 +216,7 @@ module NSXT
         end
       else
         # models, e.g. Pet
-        NSXT.const_get(return_type).new.tap do |model|
+        NSXTPolicy.const_get(return_type).new.tap do |model|
           model.build_from_hash data
         end
       end

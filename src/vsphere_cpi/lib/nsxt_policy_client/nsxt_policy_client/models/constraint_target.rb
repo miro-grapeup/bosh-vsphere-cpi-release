@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Resource attribute on which constraint should be applied. Example - sourceGroups attribute of Edge CommunicationEntry to be   restricted, is given as:   {      \"target_resource_type\":\"CommunicationEntry\",      \"attribute\":\"sourceGroups\",      \"path_prefix\":\"/infra/domains/vmc-domain/edge-communication-maps/default/communication-entries\"   } 
   class ConstraintTarget
     # Attribute name of the target entity.
@@ -160,7 +160,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

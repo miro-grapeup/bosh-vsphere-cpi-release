@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   class PolicyMetadataProxyStatus
     # UP means the metadata proxy is working fine on both transport-nodes(if configured); DOWN means the metadata proxy is is down on both transport-nodes(if configured), hence the metadata proxy will not repsond to any metadata request; Error means there is an error on transport-node(s) or no status is reported from transport-node(s). The metadata proxy may be working (or not working); NO_BACK means metadata proxy is working on one of the transport node while not in the other transport-node (if configured). If the metadata proxy on the working transport-node goes down, the metadata proxy will go down. 
     attr_accessor :proxy_status
@@ -200,7 +200,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

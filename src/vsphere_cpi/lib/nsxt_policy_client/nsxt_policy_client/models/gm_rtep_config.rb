@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Global Manager federation RTEP configuration. This configuration is distributed to all Sites participating in federation. 
   class GmRtepConfig
     # Password to authenticate IBGP session between remote tunnel endpoints created on federated sites. This is applied to inter-site underlay IBGP neighbors created over remote tunnel endpoints on all sites. Empty string (\"\") clears existing password. 
@@ -150,7 +150,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

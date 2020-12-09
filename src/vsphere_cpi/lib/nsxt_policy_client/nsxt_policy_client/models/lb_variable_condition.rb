@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This condition is used to match variable's name and value at all phases. The variables could be captured from REGEX or assigned by LBVariableAssignmentAction or system embedded variable. Varialbe_name and variable_value should be matched at the same time. 
   class LBVariableCondition
     # A flag to indicate whether reverse the match result of this condition
@@ -252,7 +252,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This action is used to select SSL mode. Three types of SSL mode actions can be specified in Transport phase, ssl passthrough, ssl offloading and ssl end-to-end. 
   class LBSslModeSelectionAction
     # The property identifies the load balancer rule action type. 
@@ -201,7 +201,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

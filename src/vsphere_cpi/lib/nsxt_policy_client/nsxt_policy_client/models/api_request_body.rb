@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # API Request Body is an Event Source that represents an API request body that is being reveived as part of an API. Supported Request Bodies are those received as part of a PATCH/PUT/POST request. 
   class ApiRequestBody
     # Event Source resource type. 
@@ -189,7 +189,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

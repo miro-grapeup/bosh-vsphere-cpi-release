@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # ServiceProfileGroups contains list of Groups referenced in Service Insertion Rules.To be considered, Service profile must be part of a Service chain and that Service chain must be used in a Rule.
   class ServiceProfileGroups
     # Link to this resource
@@ -321,7 +321,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Contains IPv4 related discovery options.
   class IPv4DiscoveryOptions
     # Indicates whether fetching IP using vm-tools is enabled. This option is only supported on ESX where vm-tools is installed. 
@@ -159,7 +159,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Constraint object to constraint any attribute on a resource based on specified expression. Example- Restrict the allowed services in Edge Communication Entry to list of  services, if the destinationGroups contain vCenter. {   \"target\":{      \"target_resource_type\":\"CommunicationEntry\",      \"attribute\":\"services\",      \"path_prefix\":\"/infra/domains/vmc-domain/edge-communication-maps/default/communication-entries\"   }   \"constraint_expression\":{     \"related_attribute\":{       \"attribute\":\"destinationGroups\"     }     \"condition\":{       \"operator\":\"INCLUDES\",       \"rhs_value\":{\"vCenter\"}       \"value_constraint\":{           \"operator\":\"ALLOW\",           \"values\":{\"/ref/services/HTTPS\", \"/ref/services/HTTOP\", ...}      }     }   } } 
   class Constraint
     # Link to this resource
@@ -425,7 +425,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

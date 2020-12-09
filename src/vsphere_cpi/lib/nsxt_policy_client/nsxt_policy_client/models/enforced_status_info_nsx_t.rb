@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Information about the realized status of the intent object on an NSX-T type of enforcement point. Some very recent changes may be excluded when preparing this information, which is indicated by Pending Changes Info. In addition to the realized status across all scopes, this information holds details about enforced realized status per scope. 
   class EnforcedStatusInfoNsxT
     # Consolidated Realized Status of an Intent object across all scopes of an NSX-T type of enforcement point. 
@@ -147,7 +147,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

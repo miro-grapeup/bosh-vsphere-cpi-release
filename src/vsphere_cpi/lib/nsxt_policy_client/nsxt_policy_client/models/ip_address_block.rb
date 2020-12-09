@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # A block of IP addresses defined by a start address and a mask/prefix (network CIDR). An IP block is typically large & allocated to a tenant for automated consumption. An IP block is always a contiguous address space, for example 192.0.0.1/8. An IP block can be further subdivided into subnets called IP block subnets. These IP block subnets can be added to IP pools and used for IP allocation.
   class IpAddressBlock
     # Link to this resource
@@ -400,7 +400,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

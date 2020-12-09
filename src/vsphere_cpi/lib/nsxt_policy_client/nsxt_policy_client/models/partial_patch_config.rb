@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This object allows enabling or disabling of partial patch functionality. Enabling partial patch allows patching of a subset of the fields of any object. After enabling partial patching, any object payload provided will be merged with the existing object payload. Note that while all mandatory fields are expected to be provided during the creation of any object, enabling partial patch will allow patching of existing objects with a subset of mandatory fields. 
   class PartialPatchConfig
     # boolean value used to enable/disable partial patch
@@ -140,7 +140,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Virtual server acts as a facade to an application, receives all client connections over TCP and distributes them among the backend servers. 
   class TcpPolicyLbVirtualServer
     # Link to this resource
@@ -501,7 +501,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

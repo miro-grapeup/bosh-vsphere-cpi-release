@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # VPN session defines connection between local and peer endpoint. Until VPN session is defined configuration is not realized.
   class IPSecVpnSession
     # Link to this resource
@@ -601,7 +601,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

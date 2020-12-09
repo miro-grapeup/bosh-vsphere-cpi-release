@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Criterion Evaluation is the basic logical condition to evaluate whether the event could be potentially met. 
   class Evaluation
     # Criterion Evaluation resource type. 
@@ -174,7 +174,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Represents an endpoint which will be used as subject in rule. It is a polymorphic type object which can be either of the types - 1. Virtual 2. Logical We have 2 separate objects representing these 2 types. VirtualEndPoint for Virtual type and ServiceInstanceEndpoint for Logical. 
   class BaseEndpoint
     # Link to this resource
@@ -440,7 +440,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

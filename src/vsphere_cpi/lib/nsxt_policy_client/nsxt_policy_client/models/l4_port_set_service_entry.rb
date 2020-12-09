@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # L4PortSet can be specified in comma separated notation of parts. Parts of a L4PortSet includes single integer or range of port in hyphen notation. Example of a PortSet: \"22, 33-70, 44\". 
   class L4PortSetServiceEntry
     # Link to this resource
@@ -473,7 +473,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

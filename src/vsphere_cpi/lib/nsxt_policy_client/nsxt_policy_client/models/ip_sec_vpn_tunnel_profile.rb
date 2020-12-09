@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # IPSec VPN tunnel profile is a reusable profile that captures phase two negotiation parameters and IPSec tunnel properties. Any changes affects all IPSec VPN sessions consuming this profile.
   class IPSecVpnTunnelProfile
     # Link to this resource
@@ -527,7 +527,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

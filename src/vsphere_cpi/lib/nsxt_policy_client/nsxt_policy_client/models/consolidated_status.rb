@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Consolidated Status of an intent object. Status Consolidation of an intent happens at multiple levels: - Per Enforcement Point: calculation of the consolidated status is performed using all realized entities that the intent objet maps to on a specific enforcement point. - Across Enforcement Points: calculation of the consolidated status is performend aggregating the consolidated status from each enforcement point. 
   class ConsolidatedStatus
     # Consolidated Realized Status of an intent object.
@@ -169,7 +169,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

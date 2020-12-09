@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Binding of a LbPoolAccess and Group to a PolicyLbVirtualServer used to route application traffic passing through load balancers. PolicyLbRule uses match conditions to match application traffic passing through a PolicyLbVirtualServer using HTTP or HTTPS. Can bind multiple PolicyLbVirtualServers to a Group. Each PolicyLbRule consists of two optional match conditions, each match contidion defines a criterion for application traffic.  If no match conditions are specified, then the PolicyLbRule will always match and it is used typically to define default rules. If more than one match condition is specified, then matching strategy determines if all conditions should match or any one condition should match for the PolicyLbRule to be considered a match.  A match indicates that the PolicyLbVirtualServer should route the request to the Group (parent of PolicyLbRule). 
   class PolicyLbRule
     # Link to this resource
@@ -471,7 +471,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Used to specify the display name and value of the IPv4Address. 
   class PolicyIPAddressInfo
     # Next hop used in auto-plumbing of static route. If a value is not provided, static route will not be auto-plumbed. 
@@ -160,7 +160,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

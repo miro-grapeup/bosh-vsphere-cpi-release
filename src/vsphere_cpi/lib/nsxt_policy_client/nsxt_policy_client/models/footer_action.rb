@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Action specified at the footer of a widget to provide additional information or to provide a clickable url for navigation. An example usage of footer action is provided under the 'example_request' section of 'CreateWidgetConfiguration' API.
   class FooterAction
     # Hyperlink to the UI page that provides details of action.
@@ -177,7 +177,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

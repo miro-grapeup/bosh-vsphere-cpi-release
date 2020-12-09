@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   class SIPacketsDroppedBySecurity
     # The packets dropped by \"Spoof Guard\"; supported packet types are IPv4, IPv6, ARP, ND, non-IP.
     attr_accessor :spoof_guard_dropped
@@ -186,7 +186,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

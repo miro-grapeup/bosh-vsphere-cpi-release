@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Get the peer_code for each tunnel to paste on the remote end of the tunnel. Currently only stand-along/unmanaged edge is supported on the remote end of the tunnel. 
   class L2VpnPeerCodes
     attr_accessor :resource_type
@@ -200,7 +200,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

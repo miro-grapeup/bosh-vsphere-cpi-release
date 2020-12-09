@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Represents the leaf level expression to restrict the target attribute value based on the set of existing values. Generally, used in combination with RelatedAttributeConditionalExpression to constraint the values related to another attribute on the same resource. This object is always used in conjunction with some exression. Example - {   \"condition\" : {       \"operator\":\"INCLUDES\",       \"rhs_value\": [\"/infra/domains/mgw/groups/VCENTER\", \"/infra/domains/mgw/groups/SRM\", \"/infra/domains/mgw/groups/NSX\"],       \"value_constraint\": {           \"resource_type\": \"ValueConstraintExpression\",           \"operator\":\"EXCLUDES\",           \"values\":[\"/infra/domains/mgw/groups/VCENTER\", \"/infra/domains/mgw/groups/SRM\", \"/infra/domains/mgw/groups/NSX\"]   } } 
   class ConditionalValueConstraintExpression
     # Set operation to constraint values.
@@ -206,7 +206,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

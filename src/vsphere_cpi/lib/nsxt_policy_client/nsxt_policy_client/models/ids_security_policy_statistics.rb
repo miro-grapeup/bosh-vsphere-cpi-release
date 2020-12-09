@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # IDS RSecurity Policy Statistics. 
   class IdsSecurityPolicyStatistics
     # Realized id of the section on NSX MP. Policy Manager can create more than one section per SecurityPolicy, in which case this identifier helps to distinguish between the multiple sections created. 
@@ -167,7 +167,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

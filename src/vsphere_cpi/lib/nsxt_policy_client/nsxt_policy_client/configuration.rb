@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'addressable/uri'
 
-module NSXT
+module NSXTPolicy
   class Configuration
     # Defines url scheme
     attr_accessor :scheme

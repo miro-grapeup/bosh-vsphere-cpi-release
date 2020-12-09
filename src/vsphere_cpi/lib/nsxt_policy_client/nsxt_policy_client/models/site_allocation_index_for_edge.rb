@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Index for cross site allocation for edge cluster and its members referred by gateway. 
   class SiteAllocationIndexForEdge
     # Unqiue edge cluster node index across sites based on stretch of the Gateway. For example, if a Gateway is streched to sites S1 with one edge cluster of 3 nodes and site S2 with one edge cluster of 2 nodes, the in the Global Manager will allocate the index for 5 edge nodes and 2 cluster in the rage 0 to 7. 
@@ -145,7 +145,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

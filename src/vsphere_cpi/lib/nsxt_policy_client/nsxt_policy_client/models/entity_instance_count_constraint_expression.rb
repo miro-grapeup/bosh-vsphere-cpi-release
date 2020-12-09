@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Represents the leaf level constraint to restrict the number instances of an entity type can be created. This is useful in restricting number of CGWs or MGWs or Providers that can created in a system. 
   class EntityInstanceCountConstraintExpression
     # Link to this resource
@@ -377,7 +377,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This entity will be used to establish association between monitoring profile and Port. Using this entity, user can specify intent for applying monitoring profile to particular Port. Port here is Segment Port. 
   class PortMonitoringProfileBindingMap
     # Link to this resource
@@ -405,7 +405,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

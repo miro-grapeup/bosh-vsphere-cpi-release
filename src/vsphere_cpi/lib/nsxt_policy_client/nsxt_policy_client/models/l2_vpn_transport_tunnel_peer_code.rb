@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # L2Vpn transport tunnel peer code. 
   class L2VpnTransportTunnelPeerCode
     # Copy this code to paste on the remote end of the tunnel. This is a base64 encoded string which has all the configuration for tunnel. E.g local/remote ips and protocol, encryption algorithm, etc. Peer code also contains PSK; be careful when sharing or storing it. 
@@ -155,7 +155,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # SpoofGuard is a tool that is designed to prevent virtual machines in your environment from sending traffic with IP addresses which are not authorized to send traffic from. A SpoofGuard policy profile once enabled blocks the traffic determined to be spoofed. 
   class SpoofGuardProfile
     # Link to this resource
@@ -402,7 +402,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

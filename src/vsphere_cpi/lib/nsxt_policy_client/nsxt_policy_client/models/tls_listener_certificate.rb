@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Returns the certificate and thumbprint of a remote TLS listener, if the listener is running and accepting requests. If the certificate cannot be retrieved, the result property describes the problem. 
   class TlsListenerCertificate
     # Result of get certificate operation.
@@ -189,7 +189,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # The Event is the criterion or criteria applied to the source and, when met, prompt Policy to run the action. All Reaction Events are constructed with reference to the object, the \"source\", that is logically deemed to be the object upon which the Event in question initially occurred upon. Some example events include: - New object was created. - Change in realization state. - Specific API is called. 
   class Event
     # Source that is logically deemed to be the \"object\" upon which the Event in question initially occurred upon. 
@@ -152,7 +152,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

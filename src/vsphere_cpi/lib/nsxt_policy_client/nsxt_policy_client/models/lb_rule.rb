@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Binding of a LBPool and Group to a LBVirtualServer used to route application traffic passing through load balancers. LBRule uses match conditions to match application traffic passing through a LBVirtualServer using HTTP or HTTPS. Can bind multiple LBVirtualServers to a Group. Each LBRule consists of two optional match conditions, each match contidion defines a criterion for application traffic.  If no match conditions are specified, then the LBRule will always match and it is used typically to define default rules. If more than one match condition is specified, then matching strategy determines if all conditions should match or any one condition should match for the LBRule to be considered a match.  A match indicates that the LBVirtualServer should route the request to the Group (parent of LBRule). 
   class LBRule
     # Each load balancer rule is used at a specific phase of load balancer processing. Currently five phases are supported, HTTP_REQUEST_REWRITE, HTTP_FORWARDING, HTTP_RESPONSE_REWRITE, HTTP_ACCESS and TRANSPORT. When an HTTP request message is received by load balancer, all HTTP_REQUEST_REWRITE rules, if present are executed in the order they are applied to virtual server. And then if HTTP_FORWARDING rules present, only first matching rule's action is executed, remaining rules are not checked. HTTP_FORWARDING rules can have only one action. If the request is forwarded to a backend server and the response goes back to load balancer, all HTTP_RESPONSE_REWRITE rules, if present, are executed in the order they are applied to the virtual server. In HTTP_ACCESS phase, user can define action to control access using JWT authentication. In TRANSPORT phase, user can define the condition to match SNI in TLS client hello and define the action to do SSL end-to-end, SSL offloading or SSL passthrough using a specific load balancer server pool. 
@@ -234,7 +234,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Reaction Action is the action to take when the stipulated criteria specified in the event exist over the source. Some example actions include: - Notify Admin (or VMC's SRE) via email. - Populate a specific label with the IPSec VPN Session. - Remove the IPSec VPN Session from a specific label. 
   class Action
     # Reaction Action resource type. 
@@ -174,7 +174,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

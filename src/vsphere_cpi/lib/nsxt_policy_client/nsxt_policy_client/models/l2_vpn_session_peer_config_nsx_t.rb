@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # L2VPNSessionPeerCodes represents an array of peer code for each tunnel. The peer code is necessary to configure the remote end of the tunnel. Currently only stand-along/unmanaged edge is supported on the remote end of the tunnel. 
   class L2VPNSessionPeerConfigNsxT
     # Alarm information details.
@@ -205,7 +205,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

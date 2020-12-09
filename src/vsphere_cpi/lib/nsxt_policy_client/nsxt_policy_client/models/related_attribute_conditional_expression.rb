@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Represents the leaf level type expression to express constraint as value of realted attribute to the target. Example - Constraint traget attribute 'X' (example in Constraint),   if destinationGroups contains 'vCeneter' then allow only values   \"HTTPS\", \"HTTP\" for attribute X.   {     \"target\":{       \"target_resource_type\":\"CommunicationEntry\",       \"attribute\":\"services\",       \"path_prefix\": \"/infra/domains/{{DOMAIN}}/edge-communication-maps/default/communication-entries/\"     },     \"constraint_expression\": {       \"resource_type\": \"RelatedAttributeConditionalExpression\",       \"related_attribute\":{         \"attribute\":\"destinationGroups\"       },       \"condition\" : {         \"operator\":\"INCLUDES\",         \"rhs_value\": [\"/infra/domains/mgw/groups/VCENTER\"],         \"value_constraint\": {           \"resource_type\": \"ValueConstraintExpression\",           \"operator\":\"INCLUDES\",           \"values\":[\"/infra/services/HTTP\", \"/infra/services/HTTPS\"]         }       }     }   } 
   class RelatedAttributeConditionalExpression
     # Link to this resource
@@ -377,7 +377,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

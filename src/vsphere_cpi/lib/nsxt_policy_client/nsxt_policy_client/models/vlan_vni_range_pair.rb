@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Vlan-Vni mapping pair resource in EvpnTenantConfig for ROUTE-SERVER Evpn mode
   class VlanVniRangePair
     # List of VNI ids and VNI ranges (specified with '-'). The vni id is used for VXLAN transmission for a given tenant Vlan ID in ROUTE-SERVER Evpn.
@@ -155,7 +155,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

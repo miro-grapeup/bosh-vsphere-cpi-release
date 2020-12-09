@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Contains ordered list of forwarding rules that determine when to forward traffic to / from the underlay for accessing cloud native services. 
   class ForwardingPolicy
     # Link to this resource
@@ -546,7 +546,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

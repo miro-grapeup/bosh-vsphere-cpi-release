@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This action is used to control access to backend server resources using JSON Web Token(JWT) authentication. The JWT authentication is done before any HTTP manipulation if the HTTP request matches the given condition in LBRule. Any verification failed, the HTTP process will be terminated, and HTTP response with 401 status code and WWW-Authentication header will be returned to client. 
   class LBJwtAuthAction
     # The property identifies the load balancer rule action type. 
@@ -218,7 +218,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

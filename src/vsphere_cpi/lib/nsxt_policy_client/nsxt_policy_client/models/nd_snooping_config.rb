@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Contains Neighbor Discovery Protocol (ND) snooping related configuration. 
   class NdSnoopingConfig
     # Maximum number of ND (Neighbor Discovery Protocol) snooped IPv6 addresses 
@@ -173,7 +173,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

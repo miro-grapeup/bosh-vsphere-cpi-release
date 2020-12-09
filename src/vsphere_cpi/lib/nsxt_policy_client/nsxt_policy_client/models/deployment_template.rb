@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Deployment Template holds the attributes specific to partner for which the service is created. These attributes are opaque to NSX.
   class DeploymentTemplate
     # List of attributes specific to a partner for which the service is created. There attributes are passed on to the partner appliance and is opaque to the NSX Manager.
@@ -147,7 +147,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

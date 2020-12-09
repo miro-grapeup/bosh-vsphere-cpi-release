@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # DHCP server configuration. Please note, the realized-state of this entity returned by the \"GET /policy/api/v1/infra/realized-state/realized-entity\" with this entity policy-path is irrelevant with the application status of this entity. Please do not rely on this returned realized-state to determine how this dhcp-server-config was applied. The dhcp realization information was reflected in the realization states of the referencing Segment or T0/T1 gateway. 
   class DhcpServerConfig
     # Link to this resource
@@ -465,7 +465,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

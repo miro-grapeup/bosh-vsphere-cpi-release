@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Site represents an NSX deployment having its own set of NSX clusters and transport nodes. It may correspond to a Data Center, VMC deployment, or NSX-Cloud deployment managed via CSM. 
   class Site
     # Link to this resource
@@ -477,7 +477,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

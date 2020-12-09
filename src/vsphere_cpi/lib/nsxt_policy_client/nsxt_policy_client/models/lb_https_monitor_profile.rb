@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Active healthchecks are disabled by default and can be enabled for a server pool by binding a health monitor to the Group through the LBRule object. This represents active health monitoring over HTTPS. Active healthchecks are initiated periodically, at a configurable interval, to each member of the Group. Only if a healthcheck fails consecutively for a specified number of times (fall_count) to a member will the member status be marked DOWN. Once a member is DOWN, a specified number of consecutive successful healthchecks (rise_count) will bring the member back to UP state. After a healthcheck is initiated, if it does not complete within a certain period, then also the healthcheck is considered to be unsuccessful. Completing a healthcheck within timeout means establishing a connection (TCP or SSL), if applicable, sending the request and receiving the response, all within the configured timeout. 
   class LBHttpsMonitorProfile
     # Link to this resource
@@ -716,7 +716,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

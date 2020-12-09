@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # ID and status of the VM on Identity Firewall compute collection. 
   class IdfwVirtualMachineStatus
     # Status of the Identity Firewall compute collection's Virtual Machine. 
@@ -157,7 +157,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Render configuration to be applied to the widget.
   class RenderConfiguration
     # The color to use when rendering an entity. For example, set color as 'RED' to render a portion of donut in red.
@@ -243,7 +243,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This action is performed in HTTP response rewrite phase. It is used to learn the value of variable from the HTTP response, and insert an entry into the persistence table if the entry doesn't exist. 
   class LBVariablePersistenceLearnAction
     # The property identifies the load balancer rule action type. 
@@ -211,7 +211,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

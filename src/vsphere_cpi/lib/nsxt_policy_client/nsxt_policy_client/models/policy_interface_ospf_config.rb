@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # OSPF Interface configuration.
   class PolicyInterfaceOspfConfig
     # Specifies the number of seconds that router must wait before it declares a OSPF neighbor router down because it has not received OSPF hello packet. OSPF dead interval should be minimum 3 times greater than the hello interval 
@@ -290,7 +290,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

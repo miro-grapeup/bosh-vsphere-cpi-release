@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Resource Field Pointer representing the exact value within a policy object.
   class ResourceFieldPointer
     # Policy Path referencing a policy object. If not supplied, the field pointer will be applied to the event source. 
@@ -150,7 +150,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

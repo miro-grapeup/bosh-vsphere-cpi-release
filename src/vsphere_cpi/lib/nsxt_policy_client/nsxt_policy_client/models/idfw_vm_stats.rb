@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Identity Firewall user login/session data for a single VM.
   class IdfwVmStats
     # Virtual machine (external ID or BIOS UUID) where login/logout event occurred.
@@ -169,7 +169,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

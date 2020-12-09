@@ -1573,10 +1573,10 @@ require 'nsxt_policy_client/api/system_administration_settings_user_management_r
 require 'nsxt_policy_client/api/system_administration_settings_user_management_users_api'
 require 'nsxt_policy_client/api/system_administration_settings_user_management_vidm_configuration_api'
 
-module NSXT
+module NSXTPolicy
   class << self
     # Customize default settings for the SDK using block.
-    #   NSXT.configure do |config|
+    #   NSXTPolicy.configure do |config|
     #     config.username = "xxx"
     #     config.password = "xxx"
     #   end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # An entity that encapsulates attributes to schedule firewall rules to be active to allow or block traffic for a specific period of time. Note that at least one property out of \"days\", \"start_time\", \"end_time\", \"start_date\", \"end_date\" is required. 
   class PolicyFirewallScheduler
     # Link to this resource
@@ -525,7 +525,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

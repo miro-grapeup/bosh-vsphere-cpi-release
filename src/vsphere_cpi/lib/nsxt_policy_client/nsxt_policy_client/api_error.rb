@@ -10,7 +10,7 @@ Swagger Codegen version: 2.4.17
 
 =end
 
-module NSXT
+module NSXTPolicy
   class ApiCallError < StandardError
     attr_reader :code, :response_headers, :response_body, :message
 

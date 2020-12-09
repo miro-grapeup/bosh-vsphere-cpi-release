@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'uri'
 
-module NSXT
+module NSXTPolicy
   class PolicyNetworkingConnectivityTier1GatewaysTier1GatewaysApi
     attr_accessor :api_client
 

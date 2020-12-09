@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # IpAddressPool is a collection of subnets. The subnets can either be derived from an IpBlock or specified by the user. User can request for IP addresses to be allocated from a pool. When an IP is requested from a pool, the IP that is returned can come from any subnet that belongs to the pool.
   class IpAddressPool
     # Link to this resource
@@ -395,7 +395,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

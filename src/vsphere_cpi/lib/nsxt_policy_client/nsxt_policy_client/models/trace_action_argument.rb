@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   class TraceActionArgument
     # Please keep this aligned with pktcap_config, if you specify reverse_filter at pktcap_config. 
     attr_accessor :reverse_filter
@@ -188,7 +188,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

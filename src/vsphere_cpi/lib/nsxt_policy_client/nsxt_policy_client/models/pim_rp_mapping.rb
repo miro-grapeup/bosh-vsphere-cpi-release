@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # PIM (Protocol Independent Multicast) RP (Randezvous Point) mapping details. 
   class PimRpMapping
     # Value of this field will be true if this edge transport node acts as rendezvous point, otherwise false. 
@@ -175,7 +175,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

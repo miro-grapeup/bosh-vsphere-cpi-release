@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # An entity that encapsulates attributes and sub-attributes of various network services (eg. L7 services, domain name, encryption algorithm) The entity will be consumed in firewall rules and can be added in new tuple called profile in firewall rules. To get a list of supported attributes and sub-attributes fire the following REST API GET https://&lt;policy-mgr&gt;/policy/api/v1/infra/context-profiles/attributes 
   class PolicyContextProfile
     # Link to this resource
@@ -402,7 +402,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

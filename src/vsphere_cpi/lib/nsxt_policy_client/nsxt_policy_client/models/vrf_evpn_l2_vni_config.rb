@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   class VrfEvpnL2VniConfig
     # Define L2 VNI and its related route distinguiser and route targets. 
     attr_accessor :l2_vni_configs
@@ -153,7 +153,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

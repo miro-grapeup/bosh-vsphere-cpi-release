@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # The GlobalCollectorConfig is the base class for global collector configurations for different types in a NSX domain. 
   class GlobalCollectorConfig
     # Port for the global collector.
@@ -232,7 +232,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Root of the api result set for forming rows.
   class RowListField
     # Short name or alias of row list field, if any. If unspecified, the row list field can be referenced by its index in the array of row list fields as $<index> (for example, $0).
@@ -184,7 +184,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

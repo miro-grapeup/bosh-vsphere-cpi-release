@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Advanced configuration for Segment
   class SegmentAdvancedConfig
     # Connectivity configuration to manually connect (ON) or disconnect (OFF) a Tier1 segment from corresponding Tier1 gateway. Only valid for Tier1 Segments. This property is ignored for L2 VPN extended segments when subnets property is not specified. 
@@ -285,7 +285,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

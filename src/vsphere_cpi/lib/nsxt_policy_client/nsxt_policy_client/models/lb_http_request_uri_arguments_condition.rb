@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This condition is used to match URI arguments aka query string of Http request messages, for example, in URI http://exaple.com?foo=1&bar=2, the \"foo=1&bar=2\" is the query string containing URI arguments. In an URI scheme, query string is indicated by the first question mark (\"?\") character and terminated by a number sign (\"#\") character or by the end of the URI. The uri_arguments field can be specified as a regular expression(Set match_type to REGEX). For example, \"foo=(?&lt;x&gt;\\d+)\". It matches HTTP requests whose URI arguments containing \"foo\", the value of foo contains only digits. And the value of foo is captured as $x which can be used in LBRuleAction fields which support variables. 
   class LBHttpRequestUriArgumentsCondition
     # A flag to indicate whether reverse the match result of this condition
@@ -237,7 +237,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

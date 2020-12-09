@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Represents the field value constraint to constrain specified field value based on defined sanity checks. Example - For DNS.upstream_servers, all the IP addresses must either be public or private.   {     \"target\": {       \"target_resource_type\": \"DnsForwarderZone\",       \"attribute\": \"upstreamServers\",       \"path_prefix\": \"/infra/dns-forwarder-zones/\"      },      \"constraint_expression\": {        \"resource_type\": \"FieldSanityConstraintExpression\",        \"operator\": \"OR\",        \"checks\": [\"ALL_PUBLIC_IPS\", \"ALL_PRIVATE_IPS\"]      }   } 
   class FieldSanityConstraintExpression
     # Link to this resource
@@ -391,7 +391,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

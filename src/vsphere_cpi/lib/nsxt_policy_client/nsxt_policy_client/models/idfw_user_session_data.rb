@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Identity Firewall user session data on a client machine (typically a VM). Multiple entries for the same user can be returned if the user logins to multiple sessions on the same VM. 
   class IdfwUserSessionData
     # AD user ID (may not exist).
@@ -225,7 +225,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

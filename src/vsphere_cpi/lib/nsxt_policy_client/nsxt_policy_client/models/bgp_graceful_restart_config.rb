@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Configuration field to hold BGP restart mode and timer.
   class BgpGracefulRestartConfig
     # If mode is DISABLE, then graceful restart and helper modes are disabled. If mode is GR_AND_HELPER, then both graceful restart and helper modes are enabled. If mode is HELPER_ONLY, then helper mode is enabled. HELPER_ONLY mode is the ability for a BGP speaker to indicate its ability to preserve forwarding state during BGP restart. GRACEFUL_RESTART mode is the ability of a BGP speaker to advertise its restart to its peers. 
@@ -181,7 +181,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

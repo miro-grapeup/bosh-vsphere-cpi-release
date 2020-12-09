@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Match conditions are used to match application traffic passing through load balancers. Multiple match conditions can be specified in one load balancer rule, each match condition defines a criterion for application traffic. If inverse field is set to true, the match result of the condition is inverted. If more than one match condition is specified, match strategy determines if all conditions should match or any one condition should match for the load balancer rule to be considered a match. Currently only HTTP messages are supported by load balancer rules. Each load balancer rule is used at a specific phase of load balancer processing. Currently three phases are supported, HTTP_REQUEST_REWRITE, HTTP_FORWARDING and HTTP_RESPONSE_REWRITE. Each phase supports certain types of match conditions, supported match conditions in HTTP_REQUEST_REWRITE phase are: LBHttpRequestMethodCondition LBHttpRequestUriCondition LBHttpRequestUriArgumentsCondition LBHttpRequestVersionCondition LBHttpRequestHeaderCondition LBHttpRequestCookieCondition LBHttpRequestBodyCondition LBTcpHeaderCondition LBIpHeaderCondition LBVariableCondition LBHttpSslCondition Supported match conditions in HTTP_FORWARDING phase are: LBHttpRequestMethodCondition LBHttpRequestUriCondition LBHttpRequestUriArgumentsCondition LBHttpRequestVersionCondition LBHttpRequestHeaderCondition LBHttpRequestCookieCondition LBHttpRequestBodyCondition LBTcpHeaderCondition LBIpHeaderCondition LBVariableCondition LBHttpSslCondition LBSslSniCondition Supported match conditions in HTTP_RESPONSE_REWRITE phase are: LBHttpResponseHeaderCondition LBHttpRequestMethodCondition LBHttpRequestUriCondition LBHttpRequestUriArgumentsCondition LBHttpRequestVersionCondition LBHttpRequestHeaderCondition LBHttpRequestCookieCondition LBTcpHeaderCondition LBIpHeaderCondition LBVariableCondition LBHttpSslCondition Supported match condition in HTTP_ACCESS phase is: LBHttpRequestMethodCondition LBHttpRequestUriCondition LBHttpRequestUriArgumentsCondition LBHttpRequestVersionCondition LBHttpRequestHeaderCondition LBHttpRequestCookieCondition LBHttpRequestBodyCondition LBTcpHeaderCondition LBIpHeaderCondition LBVariableCondition LBHttpSslCondition Supported match condition in TRANSPORT phase is: LBSslSniCondition 
   class LBRuleCondition
     # A flag to indicate whether reverse the match result of this condition
@@ -186,7 +186,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

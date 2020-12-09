@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Service profile represents specialization of a vendor template. User may provide any of the vendor_template_name or vendor_template_key properties. But in case of multiple vendor templates with the same name, it is recommended to use the vendor_template_key. When both attributes are provided, name is ignored and only key is used to identify the template. If there are multiple templates with same name, and vendor_template_name is provided, realization will fail.
   class PolicyServiceProfile
     # Link to this resource
@@ -461,7 +461,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

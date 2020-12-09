@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   class AdvanceClusterRestoreInput
     # Unique id of an instruction (as returned by the GET /restore/status call) for which input is to be provided 
     attr_accessor :id
@@ -151,7 +151,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

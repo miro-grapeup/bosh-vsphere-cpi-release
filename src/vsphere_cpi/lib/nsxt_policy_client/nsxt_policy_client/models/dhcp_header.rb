@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   class DhcpHeader
     # This is used to specify the general type of message. A client sending request to a server uses an op code of BOOTREQUEST, while a server replying uses an op code of BOOTREPLY.
     attr_accessor :op_code
@@ -170,7 +170,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

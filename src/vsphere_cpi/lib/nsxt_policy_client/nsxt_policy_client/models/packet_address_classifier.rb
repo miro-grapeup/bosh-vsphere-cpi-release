@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # A packet is classified to have an address binding, if its address configuration matches with all user specified properties. 
   class PacketAddressClassifier
     # Virtual Local Area Network Identifier
@@ -155,7 +155,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

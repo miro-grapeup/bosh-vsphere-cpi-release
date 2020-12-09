@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # LBJwtKey specifies the symmetric key or asymmetric public key used to decrypt the data in JWT. 
   class LBJwtKey
     # The property is used to identify JWT key type. 
@@ -174,7 +174,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

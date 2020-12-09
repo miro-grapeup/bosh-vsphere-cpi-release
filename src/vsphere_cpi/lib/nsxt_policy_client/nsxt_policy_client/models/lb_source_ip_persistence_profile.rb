@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Some applications maintain state and require all relevant connections to be sent to the same server as the application state is not synchronized among servers. Persistence is enabled on a LBVirtualServer by binding a persistence profile to it. 
   class LBSourceIpPersistenceProfile
     # Link to this resource
@@ -508,7 +508,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

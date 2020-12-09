@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Paged Collection of LBServiceStatusPerEP
   class AggregateLBServiceStatus
     # Intent path of object, forward slashes must be escaped using %2F. 
@@ -147,7 +147,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

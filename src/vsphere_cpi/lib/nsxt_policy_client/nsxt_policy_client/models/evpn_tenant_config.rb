@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This resource is relevant only when Evpn Service is configured in ROUTE-SERVER mode. The resource defines Vlans to VNIs mappings used by Evpn tenant VMs for overlay VXLAN transmission when attached to vRouter. The resource contains overlay transport_zone_path and vni_pool_path to orchestrate creation of child Logical-Switches. 
   class EvpnTenantConfig
     # Link to this resource
@@ -432,7 +432,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

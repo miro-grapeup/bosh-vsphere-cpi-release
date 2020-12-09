@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # LBAccessListControl is used to define how IP access list control can filter the connections from clients. 
   class LBAccessListControl
     # ALLOW means connections matching grouping object IP list are allowed and requests not matching grouping object IP list are dropped. DROP means connections matching grouping object IP list are dropped and requests not matching grouping object IP list are allowed. 
@@ -201,7 +201,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

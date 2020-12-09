@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Node usage for load balancer contains basic information and LB entity usages and capacity for the given node. Only edge node is supported. 
   class LBNodeUsage
     # The property identifies the load balancer node usage type. 
@@ -155,7 +155,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

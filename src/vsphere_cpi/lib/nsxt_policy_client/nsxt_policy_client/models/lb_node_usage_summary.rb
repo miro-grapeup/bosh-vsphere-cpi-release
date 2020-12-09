@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # The load balancer node usage summary for all nodes from specific enforcement point. Only edge node is supported. The summary contains all edge nodes which are configured in edge clusters. 
   class LBNodeUsageSummary
     # Alarm information details.
@@ -263,7 +263,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

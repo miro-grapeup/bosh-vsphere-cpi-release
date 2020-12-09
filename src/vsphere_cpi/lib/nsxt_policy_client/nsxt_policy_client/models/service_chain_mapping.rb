@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # A ServiceInsertionServiceProfile can be part of multiple ServiceChains. ServiceChainMapping for a particular profile will contain a list of all the ServiceChains it's part of. Each Mapping will also contain some metadata to uniquely identify a profile from other profiles.
   class ServiceChainMapping
     # A unique id generated for every ServiceChain. This is not a uuid.
@@ -189,7 +189,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

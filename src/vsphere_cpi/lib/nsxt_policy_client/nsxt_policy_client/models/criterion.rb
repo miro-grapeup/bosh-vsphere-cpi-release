@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Event Criterion is the logical evaluations by which the event may be deemed fulfilled. All the evaluations must be met in order for the criterion to be met (implicit AND). 
   class Criterion
     # Criterion Evaluations. 
@@ -142,7 +142,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

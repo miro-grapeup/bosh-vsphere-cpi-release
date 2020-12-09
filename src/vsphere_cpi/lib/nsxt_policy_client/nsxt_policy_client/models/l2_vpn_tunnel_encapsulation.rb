@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # L2VPN tunnel encapsulation config.
   class L2VPNTunnelEncapsulation
     # IP Address of the local tunnel port. This property only applies in CLIENT mode. 
@@ -191,7 +191,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

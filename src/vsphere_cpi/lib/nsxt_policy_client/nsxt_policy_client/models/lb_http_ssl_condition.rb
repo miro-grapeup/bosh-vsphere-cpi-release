@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This condition is used to match SSL handshake and SSL connection at all phases.If multiple properties are configured, the rule is considered a match when all the configured properties are matched. 
   class LBHttpSslCondition
     # A flag to indicate whether reverse the match result of this condition
@@ -286,7 +286,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

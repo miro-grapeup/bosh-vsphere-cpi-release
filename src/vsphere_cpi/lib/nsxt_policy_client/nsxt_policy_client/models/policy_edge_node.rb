@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This object serves as a representation of the edge cluster index to which the edge node connects. It should not be mistaken for the edge / transport node itself. Consuming services can refer to the nsx_id property to fetch the UUID of the edge / transport node that is attached to this index. 
   class PolicyEdgeNode
     # Link to this resource
@@ -405,7 +405,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Parameters to let the admin specify a relative position of a communication map or communication entry w.r.t to another one. This type is deprecated. Use the type RuleInsertParameters instead. 
   class CommunicationInsertParameters
     # The communication map/communication entry path if operation is 'insert_after' or 'insert_before' 
@@ -181,7 +181,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

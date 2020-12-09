@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Virtual Hybrid Cloud is a construct that provides network isolation for all its contents out of the box. It can be considered to be an equivalent of a tenant in the networking world, where the compute and networking elements within are isolated from other VHCs. The VHC will also be used to provide hybridity across on-prem datacenters and the cloud, thus providing a means of building private clouds with elements both on-prem and in the cloud. 
   class Vhc
     # Link to this resource
@@ -487,7 +487,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Forwarding rule that determine how to forward traffic from a VM. Traffic from VM can either be routed via Overlay or Underlay when VM is on hybrid port. Additionally NAT can be performed for VM or container on overlay to route traffic to/from underlay ROUTE_TO_UNDERLAY - Access a service on underlay space from a VM connected to hybrid port. Eg access to AWS S3 on AWS underlay ROUTE_TO_OVERLAY -  Access a service on overlay space from a VM connected to hybrid port. ROUTE_FROM_UNDERLAY - Access a service hosted on a VM (that is connected to hybrid port) from underlay space. Eg access from AWS ELB to VM ROUTE_FROM_OVERLAY - Access a  service hosted on a VM (that is connected to hybrid port) from overlay space NAT_FROM_UNDERLAY - Access a service on overlay VM/container from underlay space using DNAT from underlay IP to overlay IP NAT_TO_UNDERLAY - Access an underlay service from a VM/container on overlay space using SNAT from overlay IP to underlay IP 
   class ForwardingRule
     # Link to this resource
@@ -675,7 +675,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

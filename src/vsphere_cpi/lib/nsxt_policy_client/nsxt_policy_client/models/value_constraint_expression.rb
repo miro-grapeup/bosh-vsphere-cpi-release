@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Represents the leaf level value constraint to constrain specified attribute value to the set of values to be allowed/not-allowed. Example - sourceGroups allowed to have only with list of groups.   {     \"operator\":\"INCLUDES\",     \"values\":[\"/infra/services/HTTP\", \"/infra/services/HTTPS\"]   } 
   class ValueConstraintExpression
     # Link to this resource
@@ -391,7 +391,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

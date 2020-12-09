@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   class LBServiceInstanceDetailPerTransportNode
     # Load balancer instances details for each load balancer instance status type from the given transport node. 
     attr_accessor :instance_detail_per_status
@@ -146,7 +146,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

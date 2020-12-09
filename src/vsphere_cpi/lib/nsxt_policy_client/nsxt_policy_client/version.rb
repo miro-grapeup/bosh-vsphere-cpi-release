@@ -10,6 +10,6 @@ Swagger Codegen version: 2.4.17
 
 =end
 
-module NSXT
+module NSXTPolicy
   VERSION = '1.0.0'
 end

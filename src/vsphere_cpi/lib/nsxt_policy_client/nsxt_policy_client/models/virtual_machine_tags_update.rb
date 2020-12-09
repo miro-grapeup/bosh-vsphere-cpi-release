@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # List of tags applied to the virtual machine. Based on the enforcement point, the virtual_machine_id will be different. It could be an external id for NSX T or a moid for NSX V 
   class VirtualMachineTagsUpdate
     # The identifier that is used in the enforcement point that uniquely identifies the virtual machine. In case of NSXT it would be the value of the external_id of the virtual machine. 
@@ -157,7 +157,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

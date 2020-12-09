@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This action is used to drop the connections. There is no extra propery in this action. If there is no match condition specified, the connection will be always dropped. This action can be specified at HTTP_ACCESS or HTTP_FORWARDING pahse. 
   class LBConnectionDropAction
     # The property identifies the load balancer rule action type. 
@@ -174,7 +174,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

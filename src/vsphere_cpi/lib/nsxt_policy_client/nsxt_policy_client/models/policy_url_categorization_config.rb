@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # The type contains information about the configuration of the feature for a specific node. It contains information like the whether the feature is enabled/disabled, the context profiles defining the category list to detect. 
   class PolicyUrlCategorizationConfig
     # Link to this resource
@@ -439,7 +439,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This condition is used to match HTTP request messages by HTTP header fields. HTTP header fields are components of the header section of HTTP request and response messages. They define the operating parameters of an HTTP transaction. For example, Cookie, Authorization, User-Agent, etc. One condition can be used to match one header field, to match multiple header fields, multiple conditions must be specified. The match_type field defines how header_value field is used to match HTTP requests. The header_name field does not support match types. 
   class LBHttpRequestHeaderCondition
     # A flag to indicate whether reverse the match result of this condition
@@ -249,7 +249,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

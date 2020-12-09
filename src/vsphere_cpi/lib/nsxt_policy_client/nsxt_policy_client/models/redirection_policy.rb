@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Ordered list of rules long with the path of PolicyServiceInstance to which the traffic needs to be redirected. | Please note that the scope property must be provided for NS redirection | policy if redirect to is a service chain. For NS, when redirect to is not | to the service chain, and scope is specified on RedirectionPolicy, it | will be ignored. The scope will be determined from redirect to path | instead. For EW policy, scope must not be  supplied in the request. | Path to either Tier0 or Tier1 is allowed as the scope. Only 1 path | can be specified as a scope. | Also, note that, if stateful flag is not sent, it will be treated as true. If statelessness is intended, false must be sent explicitly as the value | for stateful field. 
   class RedirectionPolicy
     # Link to this resource
@@ -568,7 +568,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

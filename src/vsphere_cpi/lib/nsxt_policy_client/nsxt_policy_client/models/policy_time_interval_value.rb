@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Time interval on which firewall schedule will be applicable
   class PolicyTimeIntervalValue
     # Time in 24 hour and minutes in multiple of 30. Example, 9:00. 
@@ -155,7 +155,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   class CapacityThreshold
     # Set the maximum threshold percentage. Specify a value between 0 and 100. Usage percentage above this value is tagged as critical. 
     attr_accessor :max_threshold_percentage
@@ -225,7 +225,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

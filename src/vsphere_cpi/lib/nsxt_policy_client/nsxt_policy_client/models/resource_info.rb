@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # It represents the resource information which could identify resource. 
   class ResourceInfo
     # It will represent resource identifiers. For example, policy objects will be represented with paths and virtual machine will be represented with external ids. 
@@ -157,7 +157,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

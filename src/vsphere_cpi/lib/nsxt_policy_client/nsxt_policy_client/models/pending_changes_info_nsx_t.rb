@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # Information about recent changes, if any, that are not reflected in the Enforced Realized Status. 
   class PendingChangesInfoNsxT
     # Flag describing whether there are any pending changes that are not reflected in the status. 
@@ -135,7 +135,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

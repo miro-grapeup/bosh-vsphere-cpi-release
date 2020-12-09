@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # An address binding entry is a combination of the IP-MAC-VLAN binding for a logical port. The address bindings can be obtained via various methods like ARP snooping, DHCP snooping etc. or by user configuration. 
   class AddressBindingEntry
     # Source from which the address binding entry was obtained
@@ -191,7 +191,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end

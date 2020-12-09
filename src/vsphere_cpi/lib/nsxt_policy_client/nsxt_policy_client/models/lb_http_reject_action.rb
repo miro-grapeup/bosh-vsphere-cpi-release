@@ -12,7 +12,7 @@ Swagger Codegen version: 2.4.17
 
 require 'date'
 
-module NSXT
+module NSXTPolicy
   # This action is used to reject HTTP request messages. The specified reply_status value is used as the status code for the corresponding HTTP response message which is sent back to client (Normally a browser) indicating the reason it was rejected. Reference official HTTP status code list for your specific HTTP version to set the reply_status properly. LBHttpRejectAction does not support variables. 
   class LBHttpRejectAction
     # The property identifies the load balancer rule action type. 
@@ -199,7 +199,7 @@ module NSXT
           end
         end
       else # model
-        temp_model = NSXT.const_get(type).new
+        temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
     end
