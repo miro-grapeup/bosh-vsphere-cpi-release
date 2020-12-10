@@ -18,6 +18,8 @@ describe 'CPI', nsxt_all: true do
     end
     @nsxt_opaque_vlan_1 = fetch_property('BOSH_VSPHERE_OPAQUE_VLAN')
     @nsxt_opaque_vlan_2 = fetch_property('BOSH_VSPHERE_SECOND_OPAQUE_VLAN')
+    @nsxt_segment_1 = fetch_property('BOSH_VSPHERE_SEGMENT')
+    @nsxt_segment_2 = fetch_property('BOSH_VSPHERE_SECOND_SEGMENT')
 
     # Configure a user/pass client to add cert/key
     # Client built Directly in TEST. NOT USING NSXTApiClientBuilder
@@ -37,6 +39,9 @@ describe 'CPI', nsxt_all: true do
     @certificate = generate_certificate(@private_key)
     @cert_id = submit_cert_to_nsxt(@certificate)
     @principal_id = attach_cert_to_principal(@cert_id)
+
+    policy_client = NSXTPolicy::ApiClient.new(configuration)
+    @policy_group_api = NSXTPolicy::PolicyApi.new(policy_client)
   end
 
   after(:all) do
@@ -104,6 +109,26 @@ describe 'CPI', nsxt_all: true do
         'dns' => ['169.254.1.2'],
         'gateway' => '169.254.1.3'
       }
+    }
+  end
+  let(:policy_network_spec) do
+    {
+        'static-bridged' => {
+            'ip' => "169.254.#{rand(1..254)}.#{rand(4..254)}",
+            'netmask' => '255.255.254.0',
+            'cloud_properties' => { 'name' => @nsxt_segment_1 },
+            'default' => ['dns', 'gateway'],
+            'dns' => ['169.254.1.2'],
+            'gateway' => '169.254.1.3'
+        },
+        'static' => {
+            'ip' => "169.254.#{rand(1..254)}.#{rand(4..254)}",
+            'netmask' => '255.255.254.0',
+            'cloud_properties' => { 'name' => @nsxt_segment_2 },
+            'default' => ['dns', 'gateway'],
+            'dns' => ['169.254.1.2'],
+            'gateway' => '169.254.1.3'
+        }
     }
   end
 
@@ -297,6 +322,24 @@ describe 'CPI', nsxt_all: true do
           ensure
             delete_server_pool(server_pool_3)
           end
+        end
+      end
+    end
+
+    context 'when using NSXT Policy API' do
+      let(:cpi) do
+        VSphereCloud::Cloud.new(cpi_options(nsxt: {
+            host: @nsxt_host,
+            auth_certificate: @certificate.to_s,
+            auth_private_key: @private_key.to_s,
+            use_policy_api: true,
+        }))
+      end
+
+      it 'creates VM' do
+        simple_vm_lifecycle(cpi, '', vm_type, policy_network_spec) do |vm_id|
+          #require 'pry-byebug'
+          #binding.pry
         end
       end
     end
@@ -574,7 +617,7 @@ describe 'CPI', nsxt_all: true do
     @nsx_component_api.delete_certificate(cert_id)
   end
 
-  def attach_cert_to_principal(cert_id, pi_name = 'testprincipal-nsxt-spec-3', node_id = 'node-nsxt-spec-3')
+  def attach_cert_to_principal(cert_id, pi_name = 'testprincipal-nsxt-spec-4', node_id = 'node-nsxt-spec-3')
     pi = NSXT::PrincipalIdentity.new(name: pi_name, node_id: node_id,
                                      certificate_id: cert_id, permission_group: 'superusers')
     @nsx_component_trust_mgmt_api.register_principal_identity(pi).id

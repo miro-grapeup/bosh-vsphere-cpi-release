@@ -22,11 +22,6 @@ module VSphereCloud
       @max_tries = MAX_TRIES
     end
 
-    def nsxt_segment_port_list(vm:)
-      vm_segment_manager_vif_list = vm.get_nsxt_segment_vif_list
-      @manager_provider.retrieve_lport_display_names_from_vif_ids(vm_segment_manager_vif_list)
-    end
-
     def add_vm_to_groups(vm, groups)
       logger.info("Adding vm: #{vm.cid} to groups: #{groups}")
 
@@ -55,19 +50,6 @@ module VSphereCloud
         logger.info("Addition Done vm: #{vm.cid} , group looks like #{group_obj}")
       end
       logger.info("Added vm: #{vm.cid} to groups: #{groups}")
-    end
-
-    def retry_on_conflict(log_str)
-      yield
-    rescue NSXTPolicy::ApiCallError => e
-      if [409, 412].include?(e.code)
-        logger.info("Revision Error: #{log_str if log_str} with message #{e.message}")
-        # To limit request rate on NSX-T server
-        sleep(rand(5)/2.0)
-        retry
-      end
-      logger.info("Failed #{log_str if log_str} with message #{e.message}")
-      raise e
     end
 
     def remove_vm_from_groups(vm)
@@ -158,42 +140,19 @@ module VSphereCloud
       end
     end
 
-    def create_segment_port(segment:, tags:)
-      port_id = "#{tags.vm_name}_#{segment}_#{tags.network_index}"
-      port_tags = tags.each_pair.map do |type, value|
-        NSXTPolicy::Tag.new(scope: "cpi/#{type}", tag: value)
-      end
-
-      port_attachment = NSXTPolicy::PortAttachment.new(id: "#{SecureRandom.uuid}", type: "PARENT")
-      segment_port = NSXTPolicy::SegmentPort.new(id: port_id, display_name: port_id,
-        description: "Created by BOSH vSphere-CPI", tags: port_tags, attachment: port_attachment)
-      logger.info("Creating Segment Port #{port_id} on segment #{segment} with tags #{tags}")
-      retry_on_conflict("while creating segment port #{port_id} on segment #{segment}") do
-        segment_port = policy_segment_port_api.create_or_replace_infra_segment_port(segment, port_id, segment_port)
-      end
-      poll_until_realized(intent_path: segment_port.path)
-      logger.info("Finished creating segment port #{segment_port.id} "\
-                            "with port attachment id: #{segment_port.attachment.id}")
-      segment_port.attachment.id
-    end
-
     def delete_segment_ports(vm:)
       nsxt_segment_port_list = nsxt_segment_port_list(vm: vm)
       return if nsxt_segment_port_list.nil? || nsxt_segment_port_list.empty?
       nsxt_segment_port_list.each do |seg, port|
-        delete_segment_port(segment: seg, port: port)
+        logger.info("Deleting port: #{port} on segment: #{segment}")
+        begin
+          policy_segment_port_api.delete_infra_segment_port(segment, port)
+        rescue => e
+          logger.info("Failed to Delete port: #{port} on segment: #{segment} with message: #{e.inspect} with code #{e.code}")
+          raise e
+        end
+        logger.info("Finished Deleting logical port: #{port} on segment: #{segment}")
       end
-    end
-
-    def delete_segment_port(segment:, port:)
-      logger.info("Deleting port: #{port} on segment: #{segment}")
-      begin
-        policy_segment_port_api.delete_infra_segment_port(segment, port)
-      rescue => e
-        logger.info("Failed to Delete port: #{port} on segment: #{segment} with message: #{e.inspect} with code #{e.code}")
-        raise e
-      end
-      logger.info("Finished Deleting logical port: #{port} on segment: #{segment}")
     end
 
     private
@@ -202,31 +161,23 @@ module VSphereCloud
     DEFAULT_SLEEP = 1
     MAX_TRIES=100
 
-    # def poll_group_until_realized(intent_path:, vm: nil)
-    #   Bosh::Retryable.new(
-    #       tries: @max_tries,
-    #       sleep: ->(try_count, retry_exception) { @sleep_time },
-    #       on: [UnrealizedResource]
-    #   ).retryer do |i|
-    #     logger.info("Polling (try:##{i}) to check if Group with path: #{intent_path} is realized or not")
-    #     result = policy_realization_api.list_realized_entities(intent_path)
-    #
-    #     # In case policy API has not started realizing an entity. the results should be nil then as count is 0
-    #     raise UnrealizedResource.new(intent_path) if result.result_count == 0
-    #     # Select all that have been realized and are type of logical port
-    #     result.results.select! do |res|
-    #       res.state == 'REALIZED'
-    #     end
-    #     # If none has been realized yet, raise error
-    #     raise UnrealizedResource.new(intent_path) if result.results.empty?
-    #
-    #     # get the first result
-    #     segment_port_realized = result.results.first
-    #     # return realization specific identifier
-    #     realized_id = segment_port_realized.realization_specific_identifier
-    #     logger.info("Group realized with id: #{realized_id} ")
-    #   end
-    # end
+    def nsxt_segment_port_list(vm:)
+      vm_segment_manager_vif_list = vm.get_nsxt_segment_vif_list
+      @manager_provider.retrieve_lport_display_names_from_vif_ids(vm_segment_manager_vif_list)
+    end
+
+    def retry_on_conflict(log_str)
+      yield
+    rescue NSXTPolicy::ApiCallError => e
+      if [409, 412].include?(e.code)
+        logger.info("Revision Error: #{log_str if log_str} with message #{e.message}")
+        # To limit request rate on NSX-T server
+        sleep(rand(5)/2.0)
+        retry
+      end
+      logger.info("Failed #{log_str if log_str} with message #{e.message}")
+      raise e
+    end
 
     def poll_until_realized(intent_path:, vm: nil)
       Bosh::Retryable.new(

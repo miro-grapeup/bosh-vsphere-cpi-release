@@ -363,8 +363,6 @@ module VSphereCloud
             stemcell: Stemcell.new(stemcell_cid),
             upgrade_hw_version: @config.upgrade_hw_version,
             pbm: @pbm,
-            nsxt_policy_provider: @nsxt_policy_provider,
-            nsxt_config: @config.nsxt,
           )
           created_vm = vm_creator.create(vm_config)
         rescue => e
