@@ -522,8 +522,6 @@ module VSphereCloud
             stemcell: stemcell,
             upgrade_hw_version: true,
             pbm: pbm,
-            nsxt_policy_provider: nil,
-            nsxt_config: nsxt,
           ).and_return(vm_creator)
         expect(vm_creator).to receive(:create).with(vm_config).and_return(fake_vm)
 
@@ -573,8 +571,6 @@ module VSphereCloud
             upgrade_hw_version: true,
             stemcell: stemcell,
             pbm: pbm,
-            nsxt_policy_provider: nil,
-            nsxt_config: nsxt,
         ).and_return(vm_creator)
 
         expect(vm_creator).to receive(:create)
@@ -743,8 +739,6 @@ module VSphereCloud
                                    upgrade_hw_version: true,
                                    stemcell: stemcell,
                                    pbm: pbm,
-                                   nsxt_policy_provider: nil,
-                                   nsxt_config: nsxt,
                                  )
                                  .and_return(vm_creator)
           expect(vm_creator).to receive(:create)

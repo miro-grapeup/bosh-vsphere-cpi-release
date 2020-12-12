@@ -179,35 +179,6 @@ module VSphereCloud
       raise e
     end
 
-    def poll_until_realized(intent_path:, vm: nil)
-      Bosh::Retryable.new(
-          tries: @max_tries,
-          sleep: ->(try_count, retry_exception) { @sleep_time },
-          on: [UnrealizedResource]
-      ).retryer do |i|
-        logger.info("Polling (try:##{i}) to check if Entity with path: #{intent_path} is realized or not")
-        result = policy_realization_api.list_realized_entities(intent_path)
-
-        # In case policy API has not started realizing an entity. the results should be nil then as count is 0
-        raise UnrealizedResource.new(intent_path) if result.result_count == 0
-        # Select all that have been realized and are type of logical port
-        result.results.select! do |res|
-          # Not needed as path should be unique
-          # @TA : TODO Check with Shyam
-          # res.entity_type == "RealizedLogicalPort" &&
-          res.state == 'REALIZED'
-        end
-        # If none has been realized yet, raise error
-        raise UnrealizedResource.new(intent_path) if result.results.empty?
-        # get the first result
-        segment_port_realized = result.results.first
-        # return realization specific identifier
-        realized_id = segment_port_realized.realization_specific_identifier
-        #@TA TODO : Remove very verbose logs, obj:
-        logger.info("VM: #{vm.cid unless vm.nil?} Entity: #{intent_path} realized with id: #{realized_id}")
-      end
-    end
-
     def retrieve_group(group_id:)
       logger.info("Searching for Policy Group with group id: #{group_id}")
       begin
@@ -264,19 +235,15 @@ module VSphereCloud
     end
 
     def policy_segment_port_api
-      @policy_segment_port_api ||= NSXTPolicy::PolicyConnectivitySegmentsPortsApi.new(@client)
+      @policy_segment_port_api ||= NSXTPolicy::PolicyNetworkingConnectivitySegmentsPortsApi.new(@client)
     end
 
     def policy_segment_api
-      @policy_segment_api ||= NSXTPolicy::PolicyConnectivitySegmentsApi.new(@client)
+      @policy_segment_api ||= NSXTPolicy::PolicyNetworkingConnectivitySegmentsSegmentsApi.new(@client)
     end
 
     def policy_group_api
       @policy_group_api ||= NSXTPolicy::PolicyApi.new(@client)
-    end
-
-    def policy_realization_api
-      @policy_realization_api = NSXTPolicy::PolicyRealizationApi.new(@client)
     end
   end
 end

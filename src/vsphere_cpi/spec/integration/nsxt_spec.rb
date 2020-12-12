@@ -40,8 +40,16 @@ describe 'CPI', nsxt_all: true do
     @cert_id = submit_cert_to_nsxt(@certificate)
     @principal_id = attach_cert_to_principal(@cert_id)
 
-    policy_client = NSXTPolicy::ApiClient.new(configuration)
-    @policy_group_api = NSXTPolicy::PolicyApi.new(policy_client)
+    policy_configuration = NSXTPolicy::Configuration.new
+    policy_configuration.host = @nsxt_host
+    policy_configuration.username = @nsxt_username
+    policy_configuration.password = @nsxt_password
+    policy_configuration.client_side_validation = false
+    policy_configuration.verify_ssl = false
+    policy_configuration.verify_ssl_host = false
+    policy_client = NSXTPolicy::ApiClient.new(policy_configuration)
+    @policy_group_api = NSXTPolicy::PolicyInventoryGroupsGroupsApi.new(policy_client)
+    @policy_segment_port_api = NSXTPolicy::PolicyNetworkingConnectivitySegmentsPortsApi.new(policy_client)
   end
 
   after(:all) do
@@ -336,10 +344,15 @@ describe 'CPI', nsxt_all: true do
         }))
       end
 
-      it 'creates VM' do
+      it 'creates VM in specified segments' do
         simple_vm_lifecycle(cpi, '', vm_type, policy_network_spec) do |vm_id|
-          #require 'pry-byebug'
-          #binding.pry
+          # vm = @cpi.vm_provider.find(vm_id)
+          # segment_names = vm.get_nsxt_segment_vif_list.map { |x| x[0] }
+          # expect(segment_names.length).to eq(2)
+          # expect(segment_names).to include(@nsxt_segment_1)
+          # expect(segment_names).to include(@nsxt_segment_2)
+          # require 'pry-byebug'
+          # binding.pry
         end
       end
     end
@@ -617,7 +630,7 @@ describe 'CPI', nsxt_all: true do
     @nsx_component_api.delete_certificate(cert_id)
   end
 
-  def attach_cert_to_principal(cert_id, pi_name = 'testprincipal-nsxt-spec-4', node_id = 'node-nsxt-spec-3')
+  def attach_cert_to_principal(cert_id, pi_name = 'testprincipal-nsxt-spec-3', node_id = 'node-nsxt-spec-3')
     pi = NSXT::PrincipalIdentity.new(name: pi_name, node_id: node_id,
                                      certificate_id: cert_id, permission_group: 'superusers')
     @nsx_component_trust_mgmt_api.register_principal_identity(pi).id
