@@ -116,10 +116,12 @@ module NSXTPolicy
             value.to_i
           when /Float/i
             value.to_f
+          when /String/i
+            [value, value.downcase]
           else
             value
           end
-        end
+        end.flatten
       end
 
       def valid?(value)
@@ -405,7 +407,7 @@ module NSXTPolicy
     def power_state=(power_state)
       validator = EnumAttributeValidator.new('String', ['VM_RUNNING', 'VM_STOPPED', 'VM_SUSPENDED', 'UNKNOWN'])
       unless validator.valid?(power_state)
-        fail ArgumentError, 'invalid value for "power_state", must be one of #{validator.allowable_values}.'
+        fail ArgumentError, "invalid value for 'power_state', must be one of #{validator.allowable_values}, got #{power_state}"
       end
       @power_state = power_state
     end

@@ -50,6 +50,7 @@ describe 'CPI', nsxt_all: true do
     policy_client = NSXTPolicy::ApiClient.new(policy_configuration)
     @policy_group_api = NSXTPolicy::PolicyInventoryGroupsGroupsApi.new(policy_client)
     @policy_segment_port_api = NSXTPolicy::PolicyNetworkingConnectivitySegmentsPortsApi.new(policy_client)
+    @policy_group_members_api = NSXTPolicy::PolicyInventoryGroupsGroupMembersApi.new(policy_client)
   end
 
   after(:all) do
@@ -338,21 +339,44 @@ describe 'CPI', nsxt_all: true do
       let(:cpi) do
         VSphereCloud::Cloud.new(cpi_options(nsxt: {
             host: @nsxt_host,
-            auth_certificate: @certificate.to_s,
-            auth_private_key: @private_key.to_s,
+            username: @nsxt_username,
+            password: @nsxt_password,
             use_policy_api: true,
         }))
+      end
+      let(:vm_type) do
+        {
+            'ram' => 512,
+            'disk' => 2048,
+            'cpu' => 1,
+            'nsxt' => nsxt_spec
+        }
+      end
+      let(:nsxt_spec) {
+        {
+            'ns_groups' => [nsgroup_name_1, nsgroup_name_2],
+        }
+      }
+      let!(:nsgroup_1) { create_policy_group(nsgroup_name_1) }
+      let!(:nsgroup_2) { create_policy_group(nsgroup_name_2) }
+      after do
+        delete_policy_group(nsgroup_name_1)
+        delete_policy_group(nsgroup_name_2)
       end
 
       it 'creates VM in specified segments' do
         simple_vm_lifecycle(cpi, '', vm_type, policy_network_spec) do |vm_id|
-          # vm = @cpi.vm_provider.find(vm_id)
-          # segment_names = vm.get_nsxt_segment_vif_list.map { |x| x[0] }
-          # expect(segment_names.length).to eq(2)
-          # expect(segment_names).to include(@nsxt_segment_1)
-          # expect(segment_names).to include(@nsxt_segment_2)
-          # require 'pry-byebug'
-          # binding.pry
+          vm = @cpi.vm_provider.find(vm_id)
+          segment_names = vm.get_nsxt_segment_vif_list.map { |x| x[0] }
+          expect(segment_names.length).to eq(2)
+          expect(segment_names).to include(@nsxt_segment_1)
+          expect(segment_names).to include(@nsxt_segment_2)
+          results = @policy_group_members_api.get_group_vm_members_0(VSphereCloud::NSXTPolicyProvider::DEFAULT_NSXT_POLICY_DOMAIN, nsgroup_name_1).results
+          expect(results.length).to eq(1)
+          expect(results[0].display_name).to eq(vm_id)
+          results = @policy_group_members_api.get_group_vm_members_0(VSphereCloud::NSXTPolicyProvider::DEFAULT_NSXT_POLICY_DOMAIN, nsgroup_name_2).results
+          expect(results.length).to eq(1)
+          expect(results[0].display_name).to eq(vm_id)
         end
       end
     end
@@ -570,6 +594,15 @@ describe 'CPI', nsxt_all: true do
   def delete_nsgroup(nsgroup)
     grouping_object_svc = NSXT::ManagementPlaneApiGroupingObjectsNsGroupsApi.new(nsxt)
     grouping_object_svc.delete_ns_group(nsgroup.id)
+  end
+
+  def create_policy_group(group_name)
+    grp = NSXTPolicy::Group.new(:display_name => group_name)
+    @policy_group_api.update_group_for_domain(VSphereCloud::NSXTPolicyProvider::DEFAULT_NSXT_POLICY_DOMAIN, group_name, grp)
+  end
+
+  def delete_policy_group(group_name)
+    @policy_group_api.delete_group(VSphereCloud::NSXTPolicyProvider::DEFAULT_NSXT_POLICY_DOMAIN, group_name)
   end
 
   def nsgroup_effective_logical_port_member_ids(nsgroup)

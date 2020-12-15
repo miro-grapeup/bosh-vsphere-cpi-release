@@ -23,7 +23,7 @@ module VSphereCloud
     end
 
     def use_policy_api?
-      @use_policy_api
+      use_policy_api
     end
   end
 

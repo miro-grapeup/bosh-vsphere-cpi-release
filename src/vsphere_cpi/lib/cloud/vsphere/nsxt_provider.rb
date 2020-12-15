@@ -314,7 +314,7 @@ module VSphereCloud
         logical_port_display_name = logical_port_display_name_from_vif_id(vif_id: vif_id)
         switch_lport_display_id << [switch, logical_port_display_name]
       end
-      logger.info("Fetched all switch , port pairs #{switch_lport_display_id}")
+      logger.info("Fetched all switch, port pairs #{switch_lport_display_id}")
       switch_lport_display_id
     end
 

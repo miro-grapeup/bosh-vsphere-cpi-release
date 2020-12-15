@@ -126,7 +126,7 @@ module VSphereCloud
         # Create Policy API Client
         nsxt_policy_client = NSXTPolicyApiClientBuilder::build_policy_api_client(nsxt_config, logger)
 
-        @nsxt_policy_provider = NSXTPolicyProvider.new(nsxt_policy_client, @nsxt_provider, @config.nsxt.default_vif_type)
+        @nsxt_policy_provider = NSXTPolicyProvider.new(nsxt_policy_client, @config.nsxt.default_vif_type)
       end
 
       # Initialize tagging tagger object
@@ -497,8 +497,6 @@ module VSphereCloud
               logger.info("Failed to remove VM from Groups with message #{e.message}")
               raise e
             end
-            # Delete all segment ports
-            @nsxt_policy_provider.delete_segment_ports(vm: vm)
           # MANAGER API
           else
             begin
