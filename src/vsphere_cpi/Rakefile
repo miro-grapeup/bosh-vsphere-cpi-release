@@ -98,6 +98,15 @@ namespace :swagger do
       "-c ./data/nsxt_policy_api/config.json -t ./data/swagger-nsxt-template"
     ].join(' ')
   
+    sh [
+       "swagger-codegen generate",
+       "-i ./data/nsxt_policy_api/nsxt_policy_api.json",
+       "-l ruby",
+       "-o ./lib/nsxt_policy_client",
+       "-c ./data/nsxt_policy_api/config.json -t ./data/nsxt_policy_api/virtual_machine_patch",
+       "-Dmodels=RealizedVirtualMachine"
+     ].join(' ')
+
     rm_rf (["./lib/nsxt_policy_client/.swagger-codegen-ignore",
       "./lib/nsxt_policy_client/.swagger-codegen",
       "./lib/nsxt_policy_client/README.md",

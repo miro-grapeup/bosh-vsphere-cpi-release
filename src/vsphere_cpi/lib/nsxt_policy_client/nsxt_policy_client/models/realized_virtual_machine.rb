@@ -407,7 +407,7 @@ module NSXTPolicy
     def power_state=(power_state)
       validator = EnumAttributeValidator.new('String', ['VM_RUNNING', 'VM_STOPPED', 'VM_SUSPENDED', 'UNKNOWN'])
       unless validator.valid?(power_state)
-        fail ArgumentError, "invalid value for 'power_state', must be one of #{validator.allowable_values}, got #{power_state}"
+        fail ArgumentError, 'invalid value for "power_state", must be one of #{validator.allowable_values}.'
       end
       @power_state = power_state
     end
@@ -566,4 +566,5 @@ module NSXTPolicy
     end
 
   end
+
 end
