@@ -554,9 +554,7 @@ module VSphereCloud
           client.set_custom_field(vm.mob, name, value)
         end
         if @config.nsxt_enabled?
-          if @config.nsxt.use_policy_api?
-            @nsxt_policy_provider.update_vm_metadata_on_logical_ports(vm, metadata)
-          else
+          unless @config.nsxt.use_policy_api?
             @nsxt_provider.update_vm_metadata_on_logical_ports(vm, metadata)
           end
        end

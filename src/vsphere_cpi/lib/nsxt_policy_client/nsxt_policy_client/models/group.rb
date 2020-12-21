@@ -415,10 +415,10 @@ module NSXTPolicy
       return nil unless attributes.is_a?(Hash)
       self.class.swagger_types.each_pair do |key, type|
         if type =~ /\AArray<(.*)>/i
-          # check to ensure the input is an array given that the attribute
+          # check to ensure the input is an array given that the the attribute
           # is documented as an array but the input is not
           if attributes[self.class.attribute_map[key]].is_a?(Array)
-            self.send("#{key}=", attributes[self.class.attribute_map[key]].map { |v| _deserialize($1, v) })
+            self.send("#{key}=", attributes[self.class.attribute_map[key]].map{ |v| _deserialize($1, v) } )
           end
         elsif !attributes[self.class.attribute_map[key]].nil?
           self.send("#{key}=", _deserialize(type, attributes[self.class.attribute_map[key]]))
@@ -465,6 +465,10 @@ module NSXTPolicy
           end
         end
       else # model
+        # If value has resource_type - use it to deserialize
+        unless value[:resource_type].nil?
+          type = value[:resource_type].to_sym
+        end
         temp_model = NSXTPolicy.const_get(type).new
         temp_model.build_from_hash(value)
       end
@@ -500,7 +504,7 @@ module NSXTPolicy
     # @return [Hash] Returns the value in the form of hash
     def _to_hash(value)
       if value.is_a?(Array)
-        value.compact.map { |v| _to_hash(v) }
+        value.compact.map{ |v| _to_hash(v) }
       elsif value.is_a?(Hash)
         {}.tap do |hash|
           value.each { |k, v| hash[k] = _to_hash(v) }
@@ -511,6 +515,5 @@ module NSXTPolicy
         value
       end
     end
-
   end
 end
