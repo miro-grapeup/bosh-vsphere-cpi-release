@@ -4,9 +4,11 @@
     host: ((nsxt_host))
     username: ((nsxt_username))
     password: ((nsxt_password))
+    use_policy_api: true
 - path: /cloud_provider/properties/vcenter/nsxt?
   type: replace
   value:
     host: ((nsxt_host))
     username: ((nsxt_username))
     password: ((nsxt_password))
+    use_policy_api: true

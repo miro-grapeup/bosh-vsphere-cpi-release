@@ -59,7 +59,7 @@ jobs:
             args:
             - -ec
             - |
-              echo "1.0" > ./version-semver/number
+              echo 100 > ./version-semver/number
       - task: build-release
         file: source-ci/ci/tasks/build-candidate.yml
       - task: provide-version

@@ -17,7 +17,7 @@ module VSphereCloud
 
     include Logger
 
-    def initialize(client,  default_vif_type=PARENT)
+    def initialize(client,  default_vif_type='PARENT')
       @client = client
       @default_vif_type = default_vif_type
       @sleep_time = DEFAULT_SLEEP
@@ -34,13 +34,8 @@ module VSphereCloud
         retry_on_conflict("while adding vm: #{vm.cid} to group #{grp}") do
           group_obj = retrieve_group(group_id: grp)
           add_vm_to_group(group_obj, vm.cid)
-          logger.info("Addition of vm: #{vm.cid}, group looks like #{group_obj}")
-          policy_group_api.update_group_for_domain(DEFAULT_NSXT_POLICY_DOMAIN, group_obj.id, group_obj)
         end
-        group_obj = policy_group_api.read_group_for_domain(DEFAULT_NSXT_POLICY_DOMAIN, grp)
-        logger.info("Addition Done vm: #{vm.cid} , group looks like #{group_obj}")
       end
-      logger.info("Added vm: #{vm.cid} to groups: #{groups}")
     end
 
     def remove_vm_from_groups(vm)
@@ -103,10 +98,21 @@ module VSphereCloud
     def add_vm_to_group(group_obj, vm_cid)
       group_obj.expression = [] if group_obj.expression.nil?
 
+      group_obj.expression.each do |expr|
+        if expr.is_a?(NSXTPolicy::Condition) &&
+            expr.value == vm_cid &&
+            expr.key == 'Name' &&
+            expr.member_type == 'VirtualMachine' &&
+            expr.operator == 'EQUALS'
+          return
+        end
+      end
+
+      original_length = group_obj.expression.length
       unless group_obj.expression.empty?
         group_obj.expression << NSXTPolicy::ConjunctionOperator.new(resource_type: 'ConjunctionOperator',
                                                                     conjunction_operator: 'OR',
-                                                                    id: "conjunction-#{SecureRandom.uuid}")
+                                                                    id: "conjunction-#{vm_cid}")
       end
 
       group_obj.expression << NSXTPolicy::Condition.new(resource_type: 'Condition',
@@ -114,6 +120,10 @@ module VSphereCloud
                                                         operator: 'EQUALS',
                                                         member_type: 'VirtualMachine',
                                                         value: vm_cid)
+      if original_length != group_obj.expression.length
+        logger.info("Adding vm: #{vm_cid}, group #{group_obj}")
+        policy_group_api.update_group_for_domain(DEFAULT_NSXT_POLICY_DOMAIN, group_obj.id, group_obj)
+      end
     end
 
     def delete_vm_from_group(group_obj, vm_cid)
@@ -121,11 +131,14 @@ module VSphereCloud
 
       original_length = group_obj.expression.length
       group_obj.expression.delete_if do |expr|
-        next unless expr.is_a?(NSXTPolicy::Condition)
-        expr.value == vm_cid &&
+        (expr.is_a?(NSXTPolicy::Condition) &&
+            expr.value == vm_cid &&
             expr.key == 'Name' &&
             expr.member_type == 'VirtualMachine' &&
-            expr.operator == 'EQUALS'
+            expr.operator == 'EQUALS') ||
+        (expr.is_a?(NSXTPolicy::ConjunctionOperator) &&
+            expr.id == "conjunction-#{vm_cid}" &&
+            expr.conjunction_operator == 'OR')
       end
       if original_length != group_obj.expression.length
         logger.info("Removal of vm: #{vm_cid}, group #{group_obj}")
