@@ -40,7 +40,7 @@ bosh int \
   -o bosh-deployment/misc/proxy.yml \
   -o bosh-deployment/jumpbox-user.yml \
   -o source-ci/ci/shared/ops/ntp.yml \
-  -o source-ci/ci/shared/ops/use_nsxt_policy_api.json \
+  -o source-ci/ci/shared/ops/use_nsxt_policy_api.yml \
   $OPTIONAL_OPS_FILE \
   -o certification/shared/assets/ops/custom-releases.yml \
   -o certification/vsphere/assets/ops/custom-cpi-release.yml \
