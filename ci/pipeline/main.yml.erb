@@ -15,6 +15,101 @@ jobs:
 <%= render('partition', pool: pool) %>
 <% end -%>
 
+  - name: lock-bats
+    plan:
+      - aggregate:
+          - get: source-ci
+          - get: bosh-cpi-src
+            passed: [lifecycle-7.0-NSXT30]
+      - do:
+          - put: environment
+            resource: pool-7.0-NSXT30
+            params: {acquire: true}
+            on_failure:
+              put: pool-7.0-NSXT30
+              params : {release: environment}
+        attempts: 4
+
+  - name: bats
+    serial: true
+    plan:
+      - aggregate:
+          - get: source-ci
+          - {get: environment,              trigger: true,  passed: [lock-bats], resource: pool-7.0-NSXT30}
+          - {get: bosh-release,             trigger: false, resource: old-bosh-release}
+          - {get: stemcell,                 trigger: false, version: {version: "3468.46"}, resource: stemcell}
+          - {get: certification,            trigger: false}
+          - {get: bosh-deployment,          trigger: false}
+          - {get: bats,                     trigger: false}
+          - {get: bosh-cli,                 trigger: false}
+          - get: bosh-cpi-src
+            passed:
+              - lock-bats
+      - task: generate-version
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: gcr.io/round-essence-187720/vcpici-vcpi-main
+          outputs:
+          - name: version-semver
+          run:
+            path: /bin/bash
+            args:
+            - -ec
+            - |
+              echo "1.0" > ./version-semver/number
+      - task: build-release
+        file: source-ci/ci/tasks/build-candidate.yml
+      - task: provide-version
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: gcr.io/round-essence-187720/vcpici-vcpi-main
+          inputs:
+            - name: version-semver
+            - name: dev-artifacts
+          outputs:
+            - name: cpi-release
+          run:
+            path: /bin/bash
+            args:
+              - -ec
+              - |
+                cp ./version-semver/number ./cpi-release/version
+                cp ./dev-artifacts/*.tgz ./cpi-release/
+      - task: prepare-director
+        file: source-ci/ci/tasks/prepare-director.yml
+        params:
+          OPTIONAL_OPS_FILE:  |
+            -o certification/shared/assets/ops/remove-hm.yml
+            -o bosh-deployment/vsphere/resource-pool.yml
+            -o certification/shared/assets/ops/remove-provider-cert.yml
+            -o bosh-deployment/experimental/postgres-9-4.yml
+      - do:
+          - task: deploy-director
+            file: source-ci/ci/tasks/deploy-director.yml
+          - task: run-bats
+            file: source-ci/ci/tasks/run-bats.yml
+            params:
+              BAT_INFRASTRUCTURE: vsphere
+              BAT_NETWORKING:     manual
+              BAT_RSPEC_FLAGS:    "--tag ~dns --tag ~vip_networking --tag ~dynamic_networking --tag ~root_partition --tag ~raw_ephemeral_storage"
+              STEMCELL_NAME:      bosh-vsphere-esxi-ubuntu-trusty-go_agent
+        ensure:
+          do:
+            - task: teardown
+              file: source-ci/ci/tasks/teardown.yml
+
+  - name: unlock-bats
+    plan:
+      - {trigger: true, passed: [bats], get: pool-7.0-NSXT30}
+      - put: pool-7.0-NSXT30
+        params : {release: pool-7.0-NSXT30}
+
 resources:
   - name: pool-7.0-NSXT30
     type: pool
@@ -39,4 +134,29 @@ resources:
     type: bosh-io-stemcell
     source:
       name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
-
+  - name: old-bosh-release
+    type: bosh-io-release
+    source:
+      version: "270.7.0"
+      repository: cloudfoundry/bosh
+  - name: bosh-cli
+    type: s3
+    source:
+      regexp: bosh-cli-([0-9.]+)-linux-amd64
+      bucket: bosh-cli-artifacts
+      region_name: us-east-1
+  - name: bats
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry/bosh-acceptance-tests.git
+      branch: master
+  - name: bosh-deployment
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry/bosh-deployment
+      branch: master
+  - name: certification
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry-incubator/bosh-cpi-certification
+      branch: master

@@ -40,6 +40,7 @@ bosh int \
   -o bosh-deployment/misc/proxy.yml \
   -o bosh-deployment/jumpbox-user.yml \
   -o source-ci/ci/shared/ops/ntp.yml \
+  -o source-ci/ci/shared/ops/use_nsxt_policy_api.json \
   $OPTIONAL_OPS_FILE \
   -o certification/shared/assets/ops/custom-releases.yml \
   -o certification/vsphere/assets/ops/custom-cpi-release.yml \
@@ -72,4 +73,7 @@ bosh int \
   -v second_internal_ip=2013:930:0:0:0:0:0:98 \
   -v DNS=2013:930:0:0:0:0:0:1 \
   -v reserved_range_ipv6=2013:930:0:0:0:0:0:1-2013:930:0:0:0:0:0:98 \
+  -v nsxt_host="$BOSH_VSPHERE_CPI_NSXT_HOST" \
+  -v nsxt_username="$BOSH_VSPHERE_CPI_NSXT_USERNAME" \
+  -v nsxt_password="$BOSH_VSPHERE_CPI_NSXT_PASSWORD" \
   bosh-deployment/bosh.yml > director-config/director.yml

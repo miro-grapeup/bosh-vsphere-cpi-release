@@ -1,0 +1,12 @@
+- path: /instance_groups/name=bosh/properties/vcenter/nsxt?
+  type: replace
+  value:
+    host: ((nsxt_host))
+    username: ((nsxt_username))
+    password: ((nsxt_password))
+- path: /cloud_provider/properties/vcenter/nsxt?
+  type: replace
+  value:
+    host: ((nsxt_host))
+    username: ((nsxt_username))
+    password: ((nsxt_password))
