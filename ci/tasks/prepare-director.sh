@@ -76,4 +76,6 @@ bosh int \
   -v nsxt_host="$BOSH_VSPHERE_CPI_NSXT_HOST" \
   -v nsxt_username="$BOSH_VSPHERE_CPI_NSXT_USERNAME" \
   -v nsxt_password="$BOSH_VSPHERE_CPI_NSXT_PASSWORD" \
+  -v nsxt_segment="$BOSH_VSPHERE_CPI_NSXT_SEGMENT" \
+  -v nsxt_second_segment="$BOSH_VSPHERE_CPI_NSXT_SEGMENT" \
   bosh-deployment/bosh.yml > director-config/director.yml
