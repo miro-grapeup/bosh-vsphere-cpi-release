@@ -20,3 +20,7 @@
   path: /networks/name=second/subnets/0/cloud_properties?
   value:
     name: ((nsxt_second_segment))
+- path: /resource_pools/name=vms/cloud_properties/nsxt?
+  type: replace
+  value:
+    ns_groups: [((nsxt_group))]

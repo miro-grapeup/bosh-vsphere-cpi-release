@@ -78,4 +78,5 @@ bosh int \
   -v nsxt_password="$BOSH_VSPHERE_CPI_NSXT_PASSWORD" \
   -v nsxt_segment="$BOSH_VSPHERE_CPI_NSXT_SEGMENT" \
   -v nsxt_second_segment="$BOSH_VSPHERE_CPI_NSXT_SEGMENT" \
+  -v nsxt_group="$BOSH_VSPHERE_CPI_NSXT_GROUP" \
   bosh-deployment/bosh.yml > director-config/director.yml
