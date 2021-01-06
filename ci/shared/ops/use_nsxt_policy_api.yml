@@ -4,19 +4,9 @@
     host: ((nsxt_host))
     username: ((nsxt_username))
     password: ((nsxt_password))
-    use_policy_api: true
 - path: /cloud_provider/properties/vcenter/nsxt?
   type: replace
   value:
     host: ((nsxt_host))
     username: ((nsxt_username))
     password: ((nsxt_password))
-    use_policy_api: true
-- path: /networks/name=default/subnets/0/cloud_properties?
-  type: replace
-  value:
-    name: ((nsxt_segment))
-- path: /resource_pools/name=vms/cloud_properties/nsxt?
-  type: replace
-  value:
-    ns_groups: [((nsxt_group))]
