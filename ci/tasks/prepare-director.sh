@@ -48,10 +48,10 @@ bosh int \
   -v cpi_release_uri="file://$(echo cpi-release/*.tgz)" \
   -v stemcell_uri="file://$(echo stemcell/*.tgz)" \
   -v director_name=bosh \
-  -v internal_cidr=192.168.111.0/24 \
-  -v internal_gw=192.168.111.1 \
-  -v internal_ip=192.168.111.152 \
-  -v reserved_range=192.168.111.2-192.168.111.155 \
+  -v internal_cidr=30.0.0.0/16 \
+  -v internal_gw=30.0.0.1 \
+  -v internal_ip=30.0.1.1 \
+  -v reserved_range=30.0.0.0-30.0.1.0 \
   -v network_name="$BOSH_VSPHERE_VLAN" \
   -v vcenter_dc="$BOSH_VSPHERE_CPI_DATACENTER" \
   -v vcenter_ds="$unambiguous_ds" \
