@@ -48,5 +48,10 @@ pushd bats
     cp "${bosh_input}" "${bosh_cli}"
     chmod +x "${bosh_cli}"
   fi
+
+  echo "########################SLEEPING#############"
+  sleep 1200
+  echo "WAKING UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
   bundle exec rspec spec $BAT_RSPEC_FLAGS
 popd
