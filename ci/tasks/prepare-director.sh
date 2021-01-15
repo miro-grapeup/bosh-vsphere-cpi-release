@@ -66,7 +66,7 @@ bosh int \
   -v dns_recursor_ip="192.168.111.1" \
   -v http_proxy="http://$BOSH_VSPHERE_JUMPER_HOST:80" \
   -v https_proxy="http://$BOSH_VSPHERE_JUMPER_HOST:80" \
-  -v no_proxy="localhost,127.0.0.1" \
+  -v no_proxy="localhost,127.0.0.1,30.0.1.1" \
   -v second_network_name="$BOSH_VSPHERE_VLAN" \
   -v second_internal_cidr=2013:930:0:0:0:0:0:0/64 \
   -v second_internal_gw=2013:930:0:0:0:0:0:1 \
