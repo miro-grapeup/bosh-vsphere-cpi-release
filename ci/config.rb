@@ -1,4 +1,4 @@
-$pipeline.pool('7.0-NSXT30') do |pool|
+$pipeline.pool('7.0-nsxt30') do |pool|
   pool.params = {
     RSPEC_FLAGS: [
       '--tag ~cvds',
