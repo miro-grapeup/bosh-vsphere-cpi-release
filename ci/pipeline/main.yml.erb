@@ -20,13 +20,14 @@ jobs:
       - in_parallel:
           - get: source-ci
           - get: bosh-cpi-src
-            passed: [lifecycle-7.0-nsxt30]
+            passed: [unit-test]
+            trigger: true
       - do:
           - put: environment
-            resource: pool-7.0-nsxt30
+            resource: pool-7.0-nsxt30-policy
             params: {acquire: true}
             on_failure:
-              put: pool-7.0-nsxt30
+              put: pool-7.0-nsxt30-policy
               params : {release: environment}
         attempts: 4
 
@@ -35,7 +36,7 @@ jobs:
     plan:
       - in_parallel:
           - get: source-ci
-          - {get: environment,              trigger: true,  passed: [lock-bats], resource: pool-7.0-nsxt30}
+          - {get: environment,              trigger: true,  passed: [lock-bats], resource: pool-7.0-nsxt30-policy}
           - {get: bosh-release,             trigger: false, resource: old-bosh-release}
           - {get: stemcell,                 trigger: false, version: {version: "3468.46"}, resource: stemcell}
           - {get: certification,            trigger: false}
@@ -106,9 +107,9 @@ jobs:
 
   - name: unlock-bats
     plan:
-      - {trigger: true, passed: [bats], get: pool-7.0-nsxt30}
-      - put: pool-7.0-nsxt30
-        params : {release: pool-7.0-nsxt30}
+      - {trigger: true, passed: [bats], get: pool-7.0-nsxt30-policy}
+      - put: pool-7.0-nsxt30-policy
+        params : {release: pool-7.0-nsxt30-policy}
 
 resources:
   - name: pool-7.0-nsxt30
@@ -117,6 +118,13 @@ resources:
       uri:          git@gitlab.eng.vmware.com:tas-vcf-vmc-anycloud/vcpi-pool.git
       branch:       master
       pool:         v7.0-nsxt30
+      private_key:  ((vcpi-pool_deployment_key))
+  - name: pool-7.0-nsxt30-policy
+    type: pool
+    source:
+      uri:          git@gitlab.eng.vmware.com:tas-vcf-vmc-anycloud/vcpi-pool.git
+      branch:       master
+      pool:         v7.0-nsxt30-policy
       private_key:  ((vcpi-pool_deployment_key))
   - name: source-ci
     type: git
