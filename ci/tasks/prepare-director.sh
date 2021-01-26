@@ -37,8 +37,8 @@ fi
 bosh int \
   -o bosh-deployment/vsphere/cpi.yml \
   -o bosh-deployment/misc/powerdns.yml \
-  -o bosh-deployment/misc/proxy.yml \
   -o bosh-deployment/jumpbox-user.yml \
+  -o source-ci/ci/shared/ops/proxy.yml \
   -o source-ci/ci/shared/ops/ntp.yml \
   -o source-ci/ci/shared/ops/use_nsxt_policy_api.yml \
   $OPTIONAL_OPS_FILE \
