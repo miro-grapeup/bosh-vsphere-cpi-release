@@ -12,6 +12,7 @@
     username: ((nsxt_username))
     password: ((nsxt_password))
     use_policy_api: true
+    ca_cert: ((nsxt_ca_cert))
 - path: /networks/name=default/subnets/0/cloud_properties?
   type: replace
   value:

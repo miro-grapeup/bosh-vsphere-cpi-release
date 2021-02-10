@@ -33,6 +33,7 @@ fi
 # This is because on Nimbus
 # The IP range 192.168.111.151 ~ 192.168.111.254 has been reserved for static IP.
 # Nimbus never uses DHCP to assign these IPs to any of the testbed component.
+BOSH_VSPHERE_CPI_NSXT_CA_CERT=$(openssl s_client -showcerts -connect $BOSH_VSPHERE_CPI_NSXT_HOST:443 </dev/null 2>/dev/null|openssl x509 -outform PEM)
 
 bosh int \
   -o bosh-deployment/vsphere/cpi.yml \
@@ -78,5 +79,6 @@ bosh int \
   -v nsxt_password="$BOSH_VSPHERE_CPI_NSXT_PASSWORD" \
   -v nsxt_segment="$BOSH_VSPHERE_CPI_NSXT_SEGMENT" \
   -v nsxt_second_segment="$BOSH_VSPHERE_CPI_NSXT_SEGMENT" \
+  -v nsxt_ca_cert="$BOSH_VSPHERE_CPI_NSXT_CA_CERT" \
   -v nsxt_group="$BOSH_VSPHERE_CPI_NSXT_GROUP" \
   bosh-deployment/bosh.yml > director-config/director.yml
