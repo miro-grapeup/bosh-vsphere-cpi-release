@@ -29,12 +29,13 @@ if [ $current_cpi_version -lt $new_user_cpi_version ]; then
   echo "Setting vSphere user to administrator for old CPI version (<45)" 1>&2
 fi
 
+# To get the cert from nsxt-manager, we run openssl on the jump box, and then pipe that result into a local openssl command that reformats it into PEM
+BOSH_VSPHERE_CPI_NSXT_CA_CERT=$(sshpass -p "vcpi" ssh -o StrictHostKeyChecking=no "vcpi@${BOSH_VSPHERE_JUMPER_HOST}" -C "openssl s_client -showcerts -connect $BOSH_VSPHERE_CPI_NSXT_HOST:443 </dev/null 2>/dev/null" | openssl x509 -outform PEM)
+
 # Bosh is give internal ip of 192.168.111.152
 # This is because on Nimbus
 # The IP range 192.168.111.151 ~ 192.168.111.254 has been reserved for static IP.
 # Nimbus never uses DHCP to assign these IPs to any of the testbed component.
-BOSH_VSPHERE_CPI_NSXT_CA_CERT=$(openssl s_client -showcerts -connect $BOSH_VSPHERE_CPI_NSXT_HOST:443 </dev/null 2>/dev/null|openssl x509 -outform PEM)
-
 bosh int \
   -o bosh-deployment/vsphere/cpi.yml \
   -o bosh-deployment/misc/powerdns.yml \
