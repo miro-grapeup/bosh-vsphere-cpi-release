@@ -30,7 +30,7 @@ if [ $current_cpi_version -lt $new_user_cpi_version ]; then
 fi
 
 # To get the cert from nsxt-manager, we run openssl on the jump box, and then pipe that result into a local openssl command that reformats it into PEM
-BOSH_VSPHERE_CPI_NSXT_CA_CERT=$(sshpass -p "vcpi" ssh -o StrictHostKeyChecking=no "vcpi@${BOSH_VSPHERE_JUMPER_HOST}" -C "openssl s_client -showcerts -connect $BOSH_VSPHERE_CPI_NSXT_HOST:443 </dev/null 2>/dev/null" | openssl x509 -outform PEM)
+sshpass -p "vcpi" ssh -o StrictHostKeyChecking=no "vcpi@${BOSH_VSPHERE_JUMPER_HOST}" -C "openssl s_client -showcerts -connect $BOSH_VSPHERE_CPI_NSXT_HOST:443 </dev/null 2>/dev/null" | openssl x509 -outform PEM > nsxt-manager-cert.pem
 
 # Bosh is give internal ip of 192.168.111.152
 # This is because on Nimbus
@@ -80,6 +80,6 @@ bosh int \
   -v nsxt_password="$BOSH_VSPHERE_CPI_NSXT_PASSWORD" \
   -v nsxt_segment="$BOSH_VSPHERE_CPI_NSXT_SEGMENT" \
   -v nsxt_second_segment="$BOSH_VSPHERE_CPI_NSXT_SEGMENT" \
-  -v nsxt_ca_cert="$BOSH_VSPHERE_CPI_NSXT_CA_CERT" \
+  --var-file=nsxt_ca_cert=nsxt-manager-cert.pem \
   -v nsxt_group="$BOSH_VSPHERE_CPI_NSXT_GROUP" \
   bosh-deployment/bosh.yml > director-config/director.yml
