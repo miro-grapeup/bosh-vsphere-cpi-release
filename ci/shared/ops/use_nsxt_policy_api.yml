@@ -5,6 +5,7 @@
     username: ((nsxt_username))
     password: ((nsxt_password))
     use_policy_api: true
+    ca_cert: ((nsxt_ca_cert))
 - path: /cloud_provider/properties/vcenter/nsxt?
   type: replace
   value:
